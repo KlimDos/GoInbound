@@ -6,7 +6,38 @@ sc = SlackClient(slack_token)
 
 sc.api_call("channels.list")
 
-intro_msg  = '{"text":"Choose an action","fallback":"You are unable to choose an option","callback_id":"lunch_intro","color":"#3AA3E3","attachment_type":"default","actions":[{"name":"enroll","text":"Enroll","type":"button","value":"enroll"},{"name":"leave","text":"Leave","type":"button","value":"leave"}'
+
+message_attachments = [
+        {
+            "text": "<@U7G7BTY9L> Your time to be online",
+            "fallback": "You are unable to choose a game",
+            "callback_id": "inbound_1488",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+            "actions": [
+                {
+                    "name": "confirmed",
+                    "text": "Confirmed",
+                    "type": "button",
+                    "value": "1"
+                },
+                {
+                    "name": "confirm",
+                    "text": "im not going",
+                    "style": "danger",
+                    "type": "button",
+                    "value": "war",
+                    "confirm": {
+                        "title": "Are you sure?",
+                        "text": "Wouldn't you prefer a ?",
+                        "ok_text": "Yes",
+                        "dismiss_text": "No"
+                    }
+                }
+            ]
+        }
+    ]
+
 
 
 sc.api_call(
@@ -14,8 +45,8 @@ sc.api_call(
      channel='trt',
      as_user=1,
      username='Sashooook',
-     text='<@U7G7BTY9L> :smile:',
-     attachments=intro_msg,
+     text=':smile:',
+     attachments=message_attachments,
      reply_broadcast=True
 )
 
