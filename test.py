@@ -1,11 +1,37 @@
-import os                           #------------------ to get sys varybles
-from slackclient import SlackClient #------------------ for slack API
+from flask import Flask, request, make_response, Response
+import os
+import json
 
-slack_token = os.environ["SLACK_API_TOKEN"]
-sc = SlackClient(slack_token)
+from slackclient import SlackClient
 
-sc.api_call("channels.list")
+# Your app's Slack bot user token
+SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
+#SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"]
 
+# Slack client for Web API requests
+slack_client = SlackClient(SLACK_BOT_TOKEN)
+
+# Flask webserver for incoming traffic from Slack
+app = Flask(__name__)
+
+# Post a message to a channel, asking users if they want to play a game
+
+attachments_json = [
+    {
+        "fallback": "Upgrade your Slack client to use messages like these.",
+        "color": "#3AA3E3",
+        "attachment_type": "default",
+        "callback_id": "menu_options_2319",
+        "actions": [
+            {
+                "name": "games_list",
+                "text": "Pick a game...",
+                "type": "select",
+                "data_source": "external"
+            }
+        ]
+    }
+]
 
 message_attachments = [
         {
@@ -39,17 +65,60 @@ message_attachments = [
     ]
 
 
-
-sc.api_call(
-    'chat.postMessage',
-     channel='trt',
-     as_user=1,
-     username='Sashooook',
-     text=':smile:',
-     attachments=message_attachments,
-     reply_broadcast=True
+slack_client.api_call(
+  "chat.postMessage",
+  channel="C9NQKBY8N",
+  text="Shall we play a game?",
+  attachments=message_attachments
 )
 
-#intro_msg  = json.dumps([{"text":"Choose an action","fallback":"You are unable to choose an option","callback_id":"lunch_intro","color":"#3AA3E3","attachment_type":"default","actions":[{"name":"enroll","text":"Enroll","type":"button","value":"enroll"},{"name":"leave","text":"Leave","type":"button","value":"leave"}]}])
 
-#sc.api_call("chat.postMessage", channel=channel, text="What would you like to do?", attachments=intro_msg, as_user=True)
+@app.route("/slack/message_options", methods=["POST"])
+def message_options():
+    # Parse the request payload
+    form_json = json.loads(request.form["payload"])
+
+    menu_options = {
+        "options": [
+            {
+                "text": "Chess",
+                "value": "chess"
+            },
+            {
+                "text": "Global Thermonuclear War",
+                "value": "war"
+            }
+        ]
+    }
+
+    return Response(json.dumps(menu_options), mimetype='application/json')
+
+
+@app.route("/slack/message_actions", methods=["POST"])
+def message_actions():
+
+    # Parse the request payload
+    form_json = json.loads(request.form["payload"])
+
+    # Check to see what the user's selection was and update the message
+    #selection = form_json["actions"][0]["selected_options"][0]["value"]
+
+    #if selection == "war":
+    #    message_text = "The only winning move is not to play.\nHow about a nice game of chess?"
+    #else:
+    #    message_text = ":horse:"
+
+    response = slack_client.api_call(
+      "chat.update",
+      channel=form_json["channel"]["id"],
+      ts=form_json["message_ts"],
+      text=form_json,
+      attachments=[]
+    )
+
+    return make_response("", 200)
+
+
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0', port=8090)
