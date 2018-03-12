@@ -22,26 +22,28 @@ current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
 # current_weekday = 1  # use it for trubleshuting integer
-# current_hour = '16' # use it for trubleshuting
+# current_hour = '17' # use it for trubleshuting
 ######################################################################
 # dont know why buy depend of the day we will get specific work hours
 current_matrix = 0
 if current_weekday == 1:
-    current_matrix = wks.get_values('A4', 'H21', include_empty=0, )
+    current_matrix = wks.get_values('A4', 'I21', include_empty=0, )
 elif current_weekday == 2:
-    current_matrix = wks.get_values('A24', 'H37', include_empty=0, )
+    current_matrix = wks.get_values('A24', 'I37', include_empty=0, )
 elif current_weekday == 3:
-    current_matrix = wks.get_values('A40', 'H53', include_empty=0, )
+    current_matrix = wks.get_values('A40', 'I53', include_empty=0, )
 elif current_weekday == 4:
-    current_matrix = wks.get_values('A56', 'H70', include_empty=0, )
+    current_matrix = wks.get_values('A56', 'I70', include_empty=0, )
 elif current_weekday == 5:
-    current_matrix = wks.get_values('A74', 'H87', include_empty=0, )
+    current_matrix = wks.get_values('A74', 'I87', include_empty=0, )
 elif current_weekday == 6 or current_weekday == 7:
     exit()
 
 # print(*current_matrix)
 current_matrix_without_empty_entries = [elem for elem in current_matrix if len(elem) > 1]
 print(*current_matrix_without_empty_entries)
+
+user_list = wks.get_values('A100', 'I100', include_empty=0, )
 
 for row in current_matrix_without_empty_entries:
     print(row[0])
@@ -50,8 +52,9 @@ for row in current_matrix_without_empty_entries:
         for cell in row:
             # print(cell)
             if cell == 'Phones':
-                msg = row[0] + ' - ' + current_matrix_without_empty_entries[0][
-                    i] + ' thats your hour! Go inbound plse :smile: <@U7G7BTY9L>'
+
+                msg = user_list[0][i] +" it's "+ row[0] + '.\n' + current_matrix_without_empty_entries[0][i] + ' thats your hour! Go inbound plse :smile:'
+          #      print(user_list[0][i])
                 message_attachments = [
                     {
                         "text": msg,
