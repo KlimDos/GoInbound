@@ -22,7 +22,7 @@ current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
 # current_weekday = 1  # use it for trubleshuting integer
-# current_hour = '17' # use it for trubleshuting
+current_hour = '14' # use it for trubleshuting
 ######################################################################
 # dont know why buy depend of the day we will get specific work hours
 current_matrix = 0
@@ -55,11 +55,13 @@ for row in current_matrix_without_empty_entries:
 
                 msg = user_list[0][i] +" it's "+ row[0] + '.\n' + current_matrix_without_empty_entries[0][i] + ' thats your hour! Go inbound plse :smile:'
           #      print(user_list[0][i])
+              #  user_id = user_list[0][i][2:10]
+              #  print(user_id)
                 message_attachments = [
                     {
                         "text": msg,
                         # "fallback": "You are unable to choose a game",
-                        "callback_id": "inbound_1488",
+                        "callback_id": user_list[0][i][2:11],
                         "color": "#3AA3E3",
                         "attachment_type": "default",
                         "actions": [
