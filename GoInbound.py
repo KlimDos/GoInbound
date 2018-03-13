@@ -18,6 +18,7 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
 # gathering current data from the instance
+current_min = datetime.datetime.now().strftime('%M')
 current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
@@ -45,14 +46,18 @@ print(*current_matrix_without_empty_entries)
 
 user_list = wks.get_values('A100', 'I100', include_empty=0, )
 
+user_confirm = wks.get_values('A101', 'J101', include_empty=1, )
+print (user_confirm)
+if current_min == '00':
+    wks.clear('A101', 'I101')
+
 for row in current_matrix_without_empty_entries:
     print(row[0])
     if row[0].split('h')[0] == current_hour:
         i = 0
         for cell in row:
             # print(cell)
-            if cell == 'Phones':
-
+            if cell == 'Phones' and user_confirm[0][i]!='confirmed':
                 msg = user_list[0][i] +" it's "+ row[0] + '.\n' + current_matrix_without_empty_entries[0][i] + ' thats your hour! Go inbound plse :smile:'
           #      print(user_list[0][i])
                 message_attachments = [
