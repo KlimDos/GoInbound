@@ -65,12 +65,12 @@ message_attachments = [
     ]
 
 
-slack_client.api_call(
-  "chat.postMessage",
-  channel="C9NQKBY8N",
-  text="Shall we play a game?",
-  attachments=message_attachments
-)
+#slack_client.api_call(
+#  "chat.postMessage",
+#  channel="C9NQKBY8N",
+#  text="Shall we play a game?",
+#  attachments=message_attachments
+#)
 
 
 @app.route("/slack/message_options", methods=["POST"])
@@ -108,12 +108,31 @@ def message_actions():
     #else:
     #    message_text = ":horse:"
 
+    user_who_clicked = form_json['user']['id']
+    if user_who_clicked == form_json['callback_id']:
+        new_attach  = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed timestamp'
+    else:
+        new_attach = form_json['original_message']['attachments'][0]['text'] + '\n AnotherUser is clicking wher should have not'
+
+    essage_attachments = [
+        {
+            "text": new_attach,
+            # "fallback": "You are unable to choose a game",
+            "color": "#3AA3E3",
+            "attachment_type": "default",
+        }
+
+    ]
+
+
+
+
     response = slack_client.api_call(
       "chat.update",
       channel=form_json["channel"]["id"],
       ts=form_json["message_ts"],
-      text=form_json,
-      attachments=[]
+      text='',
+      attachments=essage_attachments
     )
 
     return make_response("", 200)
