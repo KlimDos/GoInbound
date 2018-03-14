@@ -4,7 +4,7 @@ import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 
 ######################################################################
-# autorizing onto Google sheet API
+## autorizing onto Google sheet API
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 # select the sheet
 sh = gc.open('1st_sheet')
