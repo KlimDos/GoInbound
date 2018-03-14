@@ -120,7 +120,8 @@ def message_actions():
     #if selection == "war":
     #    message_text = "The only winning move is not to play.\nHow about a nice game of chess?"
     #else:
-    #    message_text = ":horse:"
+    #    mssage_text = ":horse:"
+
 
     user_who_clicked = form_json['user']['id']
     if user_who_clicked == form_json['callback_id']:
