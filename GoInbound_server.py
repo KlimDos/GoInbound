@@ -1,8 +1,22 @@
 from flask import Flask, request, make_response, Response
 import os
 import json
-
 from slackclient import SlackClient
+
+import pygsheets  # ------------------ the main module
+import datetime  # ------------------ to operate current time
+
+import string
+
+
+gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+sh = gc.open('1st_sheet')
+wks = sh.worksheet(property='index', value='0')
+user_confirm = wks.get_values('A100', 'J101', include_empty=1, )
+print (user_confirm[0])
+
+
+
 
 # Your app's Slack bot user token
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
@@ -111,6 +125,18 @@ def message_actions():
     user_who_clicked = form_json['user']['id']
     if user_who_clicked == form_json['callback_id']:
         new_attach  = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed timestamp'
+        for row in user_confirm:
+            #print('%s next round' % row)
+            i=0
+            i_list = list(string.ascii_uppercase)
+            for cell in row:
+                #print('%s WWW' % cell)
+                if cell[2:11]==user_who_clicked:
+                    print(user_confirm[1][i])
+                    cell_to_write = i_list[i] + '101'
+                    print(cell_to_write)
+                    wks.update_cell(cell_to_write,'confirmed')
+                i += 1
     else:
         new_attach = form_json['original_message']['attachments'][0]['text'] + '\n AnotherUser is clicking wher should have not'
 
@@ -123,9 +149,6 @@ def message_actions():
         }
 
     ]
-
-
-
 
     response = slack_client.api_call(
       "chat.update",
