@@ -4,7 +4,6 @@ import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 
 ######################################################################
-## autorizing onto Google sheet API
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 # select the sheet
 sh = gc.open('1st_sheet')
@@ -23,7 +22,7 @@ current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
 # current_weekday = 1  # use it for trubleshuting integer
-current_hour = '15' # use it for trubleshuting
+current_hour = '10' # use it for trubleshuting
 ######################################################################
 # dont know why buy depend of the day we will get specific work hours
 current_matrix = 0
@@ -50,6 +49,7 @@ user_confirm = wks.get_values('A101', 'J101', include_empty=1, )
 print (user_confirm)
 if current_min == '00':
     wks.clear('A101', 'I101')
+    # - add sleep
 
 for row in current_matrix_without_empty_entries:
     print(row[0])
@@ -67,7 +67,7 @@ for row in current_matrix_without_empty_entries:
                         "text": msg,
                         # "fallback": "You are unable to choose a game",
                         "callback_id": user_list[0][i][2:11],
-                        "color": "#3AA3E3",
+                        "color": "#FF0000",
                         "attachment_type": "default",
                         "actions": [
                             {
