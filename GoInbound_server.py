@@ -74,7 +74,8 @@ def message_actions():
             "text": new_attach,
             "color": color,
             "attachment_type": "default",
-            "actions": actions
+            "actions": actions,
+            "callback_id": form_json['user']['id']
         }
 
     ]
