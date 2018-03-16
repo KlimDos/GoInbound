@@ -22,7 +22,7 @@ current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
 # current_weekday = 1  # use it for trubleshuting integer
-current_hour = '10' # use it for trubleshuting
+#current_hour = '10' # use it for trubleshuting
 ######################################################################
 # dont know why buy depend of the day we will get specific work hours
 current_matrix = 0
