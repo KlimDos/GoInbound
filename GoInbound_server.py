@@ -33,7 +33,8 @@ def message_actions():
 
     user_who_clicked = form_json['user']['id']
     if user_who_clicked == form_json['callback_id']:
-        new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
+       # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
+        new_attach = form_json['callback_id'] + 'has conformed'
         color = "#008000"
         actions = []
         for row in user_confirm:
