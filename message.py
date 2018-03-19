@@ -1,96 +1,112 @@
-import os
-from flask import Flask, request, make_response, Response
-from slackclient import SlackClient
-import json
+import os  # ------------------ to get sys var
+from slackclient import SlackClient  # ------------------ for slack API
+import pygsheets  # ------------------ the main module
+import datetime  # ------------------ to operate current time
 
-# Your app's Slack bot user token
-SLACK_API_TOKEN = os.environ["SLACK_API_TOKEN"]
+######################################################################
+# gathering current data from the instance
+current_min = datetime.datetime.now().strftime('%M')
+current_hour = datetime.datetime.now().strftime('%H')
+current_weekday = int(datetime.datetime.now().strftime('%u'))
+######################################################################
+
+######################################################################
+gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+# select the sheet
+sh = gc.open('Support hours')
+# select the worksheet
+
+then = datetime.timedelta(days=2)
+new_date = datetime.timedelta(days=current_weekday - 1)
+current_data_full = datetime.datetime.now() - new_date
+end_week = current_data_full + datetime.timedelta(days=4)
+strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
+
+
+
+wks = sh.worksheet(property='title', value=strng)
+######################################################################
+SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
+# SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"]
 
 # Slack client for Web API requests
-slack_client = SlackClient(SLACK_API_TOKEN)
+slack_client = SlackClient(SLACK_BOT_TOKEN)
+# current_weekday = 1  # use it for trubleshuting integer
+# current_hour = '14' # use it for trubleshuting
+######################################################################
+# dont know why buy depend of the day we will get specific work hours
+current_matrix = 0
+if current_weekday == 1:
+    current_matrix = wks.get_values('A4', 'I21', include_empty=0, )
+elif current_weekday == 2:
+    current_matrix = wks.get_values('A24', 'I37', include_empty=0, )
+elif current_weekday == 3:
+    current_matrix = wks.get_values('A40', 'I53', include_empty=0, )
+elif current_weekday == 4:
+    current_matrix = wks.get_values('A56', 'I70', include_empty=0, )
+elif current_weekday == 5:
+    current_matrix = wks.get_values('A74', 'I87', include_empty=0, )
+elif current_weekday == 6 or current_weekday == 7:
+    exit()
 
-# Flask webserver for incoming traffic from Slack
-app = Flask(__name__)
+# print(*current_matrix)
+current_matrix_without_empty_entries = [elem for elem in current_matrix if len(elem) > 1]
+print(*current_matrix_without_empty_entries)
 
+user_list = wks.get_values('A100', 'I100', include_empty=0, )
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+user_confirm = wks.get_values('A101', 'J101', include_empty=1, )
+print (user_confirm)
+if current_min == '00':
+    wks.clear('A101', 'I101')
+    # - add sleep
 
-# Post a message to a channel, asking users if they want to play a game
-
-attachments_json = [
-    {
-        "fallback": "Upgrade your Slack client to use messages like these.",
-        "color": "#3AA3E3",
-        "attachment_type": "default",
-        "callback_id": "menu_options_2319",
-        "actions": [
-            {
-                "name": "games_list",
-                "text": "Pick a game...",
-                "type": "select",
-                "data_source": "external"
-            }
-        ]
-    }
-]
-
-
-slack_client.api_call(
-  "chat.postMessage",
-  channel="trt",
-  text="Shall we play a game?",
-  attachments=attachments_json
-)
-
-
-@app.route("/slack/message_options", methods=["POST"])
-def message_options():
-    # Parse the request payload
-    form_json = json.loads(request.form["payload"])
-
-    menu_options = {
-        "options": [
-            {
-                "text": "Chess",
-                "value": "chess"
-            },
-            {
-                "text": "Global Thermonuclear War",
-                "value": "war"
-            }
-        ]
-    }
-
-    return Response(json.dumps(menu_options), mimetype='application/json')
-
-
-@app.route("/slack/message_actions", methods=["POST"])
-def message_actions():
-
-    # Parse the request payload
-    form_json = json.loads(request.form["payload"])
-
-    # Check to see what the user's selection was and update the message
-    selection = form_json["actions"][0]["selected_options"][0]["value"]
-
-    if selection == "war":
-        message_text = "The only winning move is not to play.\nHow about a nice game of chess?"
-    else:
-        message_text = ":horse:"
-
-    response = slack_client.api_call(
-      "chat.update",
-      channel=form_json["channel"]["id"],
-      ts=form_json["message_ts"],
-      text=message_text,
-      attachments=[]
-    )
-
-    return make_response("", 200)
-
-
-
-if __name__ == "__main__":
-    app.run()
+for row in current_matrix_without_empty_entries:
+    print(row[0])
+    if row[0].split('h')[0] == current_hour:
+        i = 0
+        for cell in row:
+            # print(cell)
+            if cell == 'Phones' and user_confirm[0][i]!='confirmed':
+                msg = user_list[0][i] +" it's "+ row[0] + '.\n' + current_matrix_without_empty_entries[0][i] + ' thats your hour! Go inbound plse :smile:'
+          #      print(user_list[0][i])
+              #  user_id = user_list[0][i][2:10]
+              #  print(user_id)
+                message_attachments = [
+                    {
+                        "text": msg,
+                        # "fallback": "You are unable to choose a game",
+                        "callback_id": user_list[0][i][2:11],
+                        "color": "#FF0000",
+                        "attachment_type": "default",
+                        "actions": [
+                            {
+                                "name": "confirm",
+                                "text": "Confirm",
+                                "type": "button",
+                                "value": "1"
+                            },
+                            {
+                                "name": "confirm",
+                                "text": "I can't",
+                                "style": "danger",
+                                "type": "button",
+                                "value": "war",
+                                "confirm": {
+                                    "title": "Are you sure?",
+                                    "text": "Would you prefer to notify your manager?",
+                                    "ok_text": "Yes",
+                                    "dismiss_text": "No"
+                                }
+                            }
+                        ]
+                    }
+                ]
+                print(msg)
+                slack_client.api_call(
+                    "chat.postMessage",
+                    channel="C9NQKBY8N",
+                    text='',
+                    attachments=message_attachments
+                )
+            i += 1
