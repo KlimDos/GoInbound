@@ -4,25 +4,38 @@ import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 
 ######################################################################
+# gathering current data from the instance
+current_min = datetime.datetime.now().strftime('%M')
+current_hour = datetime.datetime.now().strftime('%H')
+current_weekday = int(datetime.datetime.now().strftime('%u'))
+######################################################################
+then = datetime.timedelta(days=2)
+new_date = datetime.timedelta(days=current_weekday - 1)
+current_data_full = datetime.datetime.now() - new_date
+end_week = current_data_full + datetime.timedelta(days=4)
+strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
+
+# print ("\nweek day - %s \nweek day type- %s \ncurrent hour - %s \ncurrent hour type - %s" % (current_weekday, type(current_weekday), current_hour, type(current_hour)))
+if current_weekday == 1 and current_hour == '00':
+    f = open("/home/sasha/GoInbound/list_name", "w")
+    f.write(strng)
+    f.close()
+    print("list name owerwrited")
+
+######################################################################
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 # select the sheet
-sh = gc.open('1st_sheet')
+sh = gc.open('Support hours')
 # select the worksheet
-wks = sh.worksheet(property='index', value='0')
+wks = sh.worksheet(property='title', value=strng)
 ######################################################################
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"]
 
 # Slack client for Web API requests
 slack_client = SlackClient(SLACK_BOT_TOKEN)
-######################################################################
-# gathering current data from the instance
-current_min = datetime.datetime.now().strftime('%M')
-current_hour = datetime.datetime.now().strftime('%H')
-current_weekday = int(datetime.datetime.now().strftime('%u'))
-######################################################################
 # current_weekday = 1  # use it for trubleshuting integer
-current_hour = '14' # use it for trubleshuting
+# current_hour = '14' # use it for trubleshuting
 ######################################################################
 # dont know why buy depend of the day we will get specific work hours
 current_matrix = 0

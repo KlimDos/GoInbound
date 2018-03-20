@@ -9,21 +9,16 @@ current_min = datetime.datetime.now().strftime('%M')
 current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 ######################################################################
-
-######################################################################
-gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
-# select the sheet
-sh = gc.open('Support hours')
-# select the worksheet
-
 then = datetime.timedelta(days=2)
 new_date = datetime.timedelta(days=current_weekday - 1)
 current_data_full = datetime.datetime.now() - new_date
 end_week = current_data_full + datetime.timedelta(days=4)
 strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
-
-
-
+######################################################################
+gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+# select the sheet
+sh = gc.open('Support hours')
+# select the worksheet
 wks = sh.worksheet(property='title', value=strng)
 ######################################################################
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
