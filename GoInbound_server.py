@@ -7,9 +7,11 @@ import string  # to get an adc list
 
 f = open("/home/sasha/GoInbound/list_name", "r")
 strng = f.read()
+f.close()
+
 # -----------wrap this up due to time o time request errors
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
-sh = gc.open('1st_sheet')
+sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
 wks = sh.worksheet(property='title', value=strng)
 user_confirm = wks.get_values('A100', 'J101', include_empty=1, )

@@ -23,7 +23,6 @@ if (current_weekday == 1 and current_hour == '00') or (os.path.exists('/home/sas
     f.close()
     print("list name owerwrited")
 
-
 ######################################################################
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 # select the sheet
