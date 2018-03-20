@@ -16,11 +16,13 @@ end_week = current_data_full + datetime.timedelta(days=4)
 strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
 
 # print ("\nweek day - %s \nweek day type- %s \ncurrent hour - %s \ncurrent hour type - %s" % (current_weekday, type(current_weekday), current_hour, type(current_hour)))
-if current_weekday == 1 and current_hour == '00':
+# print(os.path.exists('/home/sasha/GoInbound/list_name'))
+if (current_weekday == 1 and current_hour == '00') or (os.path.exists('/home/sasha/GoInbound/list_name') is False):
     f = open("/home/sasha/GoInbound/list_name", "w")
     f.write(strng)
     f.close()
     print("list name owerwrited")
+
 
 ######################################################################
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
