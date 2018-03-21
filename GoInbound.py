@@ -109,7 +109,7 @@ for row in current_matrix_without_empty_entries:
                 print(msg)
                 slack_client.api_call(
                     "chat.postMessage",
-                    channel="C9NQKBY8N",
+                    channel="G7GMUN1RA",
                     text='',
                     attachments=message_attachments
                 )
