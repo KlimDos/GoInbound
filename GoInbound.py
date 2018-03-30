@@ -3,6 +3,7 @@ import logging
 from slackclient import SlackClient  # ------------------ for slack API
 import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
+import random
 
 LOG = logging.getLogger(__name__)
 
@@ -23,6 +24,36 @@ def retry(fn):
     return wrapped
 
 
+emoji = ('davidh','joshua','revolution_parrot','trump','scat_sleepy','glitch_crab','adam','scarederic','mike','happy',
+         'sadmike','lightsaber','krishna','mitch','swiper','minion','unamused_face','piggy','mirror_parrot','coolio',
+         'python','bugs','cloudfinder','pikachu2','captain_obvious','hero','rock','huh','weasel','coffee_','tardis',
+         'szechuan','cry_laughing','grumpycat','troll','francisco','nod','jonk','scat_conspirator','shaka','godmode',
+         'noice','itwasntme','cry_','coololi','yellow_duck','bryan','debian','porg','bowtie','celebrate','whew',
+         'black_square','axcient','penguin_','dead_girl','bruno','discodancer','adi','ninjaphone','barf','ibelieve',
+         'krishnaboom','blush_','sadpanda','hendance','godfather','rage4','superwoman','unix','smileycute','call_me',
+         'slap','dusty_stick','portal_parrot','captain','madunikitty','andy','grinning_face','angrytrump',
+         'science_parrot','coolkim','cube','brb','homer','kevin','scat_concern','goberserk','bryanboom','finnadie',
+         'pirate_parrot','hairybruno','rick','poof','facepalm','madandy','bowlingpin','sad_parrot','birdp','nico',
+         'trogdor','police','neckbeard','ussr','white_square','madsteve','goodnews','cubimal_chick','shipit','hulkfist',
+         'steveboom','philosoraptor','picklerick','shocked','tami','madadam','slack_call','linux','stable_parrot',
+         'sovjet_parrot','face_with_tears_of_joy','toe','trap','hi5','hug','rotating_parrot','monkey_dance','atleti',
+         'madmike','hairnetkevin','dab_','unikitty','notsure','zoidberg','derek','defcon25','giggle','why',
+         'donttalktome','triplets_parrot','bearsteve','montz','okay','scat_think','ren','peep','doh','barca',
+         'blush_normal','pjsalt','ultra_parrot','summer','guillermo','ssearch_cat','superman','coolbruno','bbill',
+         'beafraid','clapping','dull','beryl','cheddar','mway','towelie','toucansam','duck_yellow','phoneninja',
+         'disappearing_ninja','tongue_out','5floppy','r2d2','pikachu','deadpoollove','doge','snoopy','simple_smile',
+         'angel_parrot','surprised','coffeebean','fast_parrot','sombrero_parrot','sadpicard','hairnetmike',
+         'shipit_parrot','madkevin','morty','fry','rube','slack','squirrel','banghead','fingerscrossed',
+         'with_rolling_eyes','moonwalk_parrot','yaomingmeme','rofl','kris','davidn','nooice','deal_with_it_parrot',
+         'octocat','rage1','ippon_seoi_nage','rebel','handsinair','this','skinnyjoshua','troll_parrot','scat_work',
+         'lipssealed','real','grumpy','murphys','rage2','kappa','hurtrealbad','eye_wink','efolder','trollface',
+         'high_fives','thumbsup_parrot','steve','peace_out','peace','sweating','sbug','coreyb','winkinghamster',
+         'shame','acorn','bender','palm_face','kim','thumbsup_all','knoif','pride','parrot_poop','metal','vzhuh',
+         'angrydink','partyparrot','rage3','cmd','headbang','smirk1','skype_face_palm','highflyer','smile-coffee',
+         'cruella','fifo_parrot_r','sun','axcientx','pumpkin','fu','kumomon','jaws','fifo_parrot','feelsgood','oli',
+         'feelsbadman','poopy','vovka','mustache_parrot','hairoli','hammer_time','ooee','bowing','headdesk',
+         'fidget_spinner','turkey_','like_it','crying_face','chicknugg','penarol','portalcake','coolsteve','suspect',
+         'fist_pump','sdelight_cat','yoda','ninja')
 #####################################################################
 # "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
@@ -85,14 +116,6 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
 
-#WEEKDAY_MATRIX = {
-#    1: ('A4', 'I21'),
-#    2: ('A24', 'I37'),
-#    3: ('A40', 'I53'),
-#    4: ('A56', 'I70'),
-#    5: ('A74', 'I87'),
-#}
-
 WEEKDAY_MATRIX = {
     1: ('A4', 'R26'),
     2: ('A30', 'R49'),
@@ -141,8 +164,9 @@ for row in current_matrix_without_empty_entries:
         for cell in row:
             # print(cell)
             if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
+                emoji_final = ':'+emoji[random.randint(0, 280)]+':'
                 msg = user_list[0][i] + " it's " + row[1] + ' PST.\n' + current_matrix_without_empty_entries[0][
-                    i] + ' thats your hour! Go inbound plse :smile:'
+                    i] + ' thats your hour! Go inbound plse ' + emoji_final
                 # print(user_list[0][i])
                 #  user_id = user_list[0][i][2:10]
                 #  print(user_id)
