@@ -14,7 +14,7 @@ gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
 #wks = sh.worksheet(property='title', value=strng)
-wks = sh.worksheet(property='title', value='April 2 - April 6 global')
+wks = sh.worksheet(property='title', value='April 2 - April 6')
 user_confirm = wks.get_values('A130', 'S131', include_empty=1, )
 # -debug- print (user_confirm[0])
 

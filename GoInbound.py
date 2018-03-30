@@ -76,7 +76,7 @@ gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 sh = gc.open('Support hours')
 # select the worksheet
 # wks = sh.worksheet(property='title', value=strng)
-wks = sh.worksheet(property='title', value='April 2 - April 6 global')
+wks = sh.worksheet(property='title', value='April 2 - April 6')
 ######################################################################
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"]
