@@ -13,8 +13,9 @@ f.close()
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
-wks = sh.worksheet(property='title', value=strng)
-user_confirm = wks.get_values('A100', 'J101', include_empty=1, )
+#wks = sh.worksheet(property='title', value=strng)
+wks = sh.worksheet(property='title', value='April 2 - April 6 global')
+user_confirm = wks.get_values('A130', 'S131', include_empty=1, )
 # -debug- print (user_confirm[0])
 
 
@@ -47,7 +48,7 @@ def message_actions():
             i_list = list(string.ascii_uppercase)
             for cell in row:
                 if cell[2:11] == user_who_clicked:
-                    cell_to_write = i_list[i] + '101'
+                    cell_to_write = i_list[i] + '131'
                     wks.update_cell(cell_to_write, 'confirmed')
                 i += 1
     else:
