@@ -97,6 +97,10 @@ def message_actions():
 
     return make_response("", 200)
 
-
+##################################
+@app.route('/post_strng')
+def query_example():
+    return 'Todo...'
+##################################
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8090)
