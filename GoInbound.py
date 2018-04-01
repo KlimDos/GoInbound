@@ -55,29 +55,12 @@ emoji = ('davidh','joshua','revolution_parrot','trump','scat_sleepy','glitch_cra
          'fidget_spinner','turkey_','like_it','crying_face','chicknugg','penarol','portalcake','coolsteve','suspect',
          'fist_pump','sdelight_cat','yoda','ninja')
 #####################################################################
-# "G7GMUN1RA" "support_smolensk" - private
+# "G7GMUN1RA" "support_smolensk" - p
 # "C7HAE7FEG" "ax-phone_schedule"
 # "C9NQKBY8N" "test_aalimov"
 #
 Chanel_to_post = "C9NQKBY8N"
 
-# User list
-# Sveta - <@U7EAWJGBB>
-# Victor - <@U7F8LKMK4>
-# Alex A. - <@U7FAV8USY>
-# Pavel - <@U9N7VNTT4>
-# Sasha - <@U7G7BTY9L>
-# Alex L. - <@U80KQBF27>
-# Artur - <@U94TGT8J3>
-# Yette - <@U7ERL2NRJ>
-# Marc - <@U7F14B457>
-# Matt - <@U7E4QJ8C8>
-# Kathlyn - <@U7FLHETDL>
-# Jeff - <@U7E5A6BH6>
-# Daniel - <@U7E4RCW1E>
-# BQ - <@U7E4UNCV6>
-# Dave - <@U7E4Q1ZTJ>
-# John - <@U7FLGHQKG>
 ######################################################################
 # gathering current data from the instance
 current_min = datetime.datetime.now().strftime('%M')
