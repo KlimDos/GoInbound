@@ -95,7 +95,7 @@ def message_actions():
         attachments=message_attachments
     )
 
-    return make_response("form_json", 200)
+    return make_response("", 200), form_json
 
 ##################################
 @app.route('/post_strng')
