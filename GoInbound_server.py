@@ -95,7 +95,7 @@ def message_actions():
         attachments=message_attachments
     )
     #print(json.dumps(form_json) + '\n')
-    print(form_json["original_message"]["attachments"]["text"])
+    print(type(form_json["original_message"]["attachments"]["text"]))
     return make_response("", 200),
 
 
