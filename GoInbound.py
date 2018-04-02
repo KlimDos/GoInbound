@@ -66,6 +66,8 @@ Chanel_to_post = "C9NQKBY8N"
 current_min = datetime.datetime.now().strftime('%M')
 current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
+if int(current_hour) < 4:
+    current_weekday = current_weekday-1
 
 # current_weekday = 1  # use it for troubleshooting integer
 # current_hour = '14' # use it for troubleshooting
