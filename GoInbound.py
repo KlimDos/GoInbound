@@ -147,15 +147,17 @@ else:
 current_matrix_without_empty_entries = [elem for elem in current_matrix if len(elem) > 1]
 # print(*current_matrix_without_empty_entries)
 
-user_list = wks.get_values('A130', 'R130', include_empty=0, )
-user_confirm = wks.get_values('A131', 'S131', include_empty=1, )
-
-print(user_confirm)
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
     wks.clear('A131', 'R131')
     # - add sleep
+
+user_list = wks.get_values('A130', 'R130', include_empty=0, )
+user_confirm = wks.get_values('A131', 'S131', include_empty=1, )
+
+print(user_confirm)
+
 ######################################################################
 for row in current_matrix_without_empty_entries:
     print(row[0])
