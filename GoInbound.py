@@ -59,6 +59,8 @@ def retry(fn):
 # "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
 # "C9NQKBY8N" "test_aalimov"
+
+# "U7G7BTY9L
 #
 Chanel_to_post = "C7HAE7FEG"
 
@@ -198,6 +200,8 @@ for row in current_matrix_without_empty_entries:
                     }
                 ]
                 print(msg)
+                if int(current_min) > 0:
+                    Chanel_to_post = user_list[0][i][2:11]
                 slack_client.api_call(
                     "chat.postMessage",
                     channel=Chanel_to_post,
