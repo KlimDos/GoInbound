@@ -5,25 +5,6 @@ import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 import random
 
-LOG = logging.getLogger(__name__)
-
-
-def retry(fn):
-    def wrapped(*args, **kwargs):
-        while True:
-            result, exception = None, None
-            try:
-                result = fn(*args, **kwargs)
-            except Exception as exc:
-                exception = exc
-                LOG.exception('Got error - %s', repr(exc))
-
-            if exception is None:
-                return result
-
-    return wrapped
-
-
 emoji = ('davidh','joshua','revolution_parrot','trump','scat_sleepy','glitch_crab','adam','scarederic','mike','happy',
          'sadmike','lightsaber','krishna','mitch','swiper','minion','unamused_face','piggy','mirror_parrot','coolio',
          'python','bugs','cloudfinder','pikachu2','captain_obvious','hero','rock','huh','weasel','coffee_','tardis',
@@ -54,23 +35,42 @@ emoji = ('davidh','joshua','revolution_parrot','trump','scat_sleepy','glitch_cra
          'feelsbadman','poopy','vovka','mustache_parrot','hairoli','hammer_time','ooee','bowing','headdesk',
          'fidget_spinner','turkey_','like_it','crying_face','chicknugg','penarol','portalcake','coolsteve','suspect',
          'fist_pump','sdelight_cat','yoda','ninja')
+
+LOG = logging.getLogger(__name__)
+
+
+def retry(fn):
+    def wrapped(*args, **kwargs):
+        while True:
+            result, exception = None, None
+            try:
+                result = fn(*args, **kwargs)
+            except Exception as exc:
+                exception = exc
+                LOG.exception('Got error - %s', repr(exc))
+
+            if exception is None:
+                return result
+
+    return wrapped
+
+
 #####################################################################
-# "G7GMUN1RA" "support_smolensk" - p
+# "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
 # "C9NQKBY8N" "test_aalimov"
 #
-Chanel_to_post = "C9NQKBY8N"
+Chanel_to_post = "C7HAE7FEG"
 
-######################################################################
+#####################################################################
 # gathering current data from the instance
 current_min = datetime.datetime.now().strftime('%M')
 current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
-if int(current_hour) < 4:
-    current_weekday = current_weekday-1
 
-# current_weekday = 1  # use it for troubleshooting integer
-# current_hour = '14' # use it for troubleshooting
+
+#current_weekday = 1  # use it for troubleshooting integer
+#current_hour = '10' # use it for troubleshooting
 ######################################################################
 
 # determining a worksheet name ("month day - month day")
@@ -79,11 +79,14 @@ new_date = datetime.timedelta(days=current_weekday - 1)
 current_data_full = datetime.datetime.now() - new_date
 end_week = current_data_full + datetime.timedelta(days=4)
 strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
-if (current_weekday == 1 and current_hour == '00') or (os.path.exists('/home/sasha/GoInbound/list_name') is False):
+if (current_weekday == 1 and current_hour == '02') or (os.path.exists('/home/sasha/GoInbound/list_name') is False):
     f = open("/home/sasha/GoInbound/list_name", "w")
     f.write(strng)
     f.close()
     print("list name overwrote")
+
+if int(current_hour) < 4:
+    current_weekday = current_weekday-1
 
 ######################################################################
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
@@ -91,8 +94,8 @@ gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 #  sh = retry(gc.open)('Support hours') - its using retry function
 sh = gc.open('Support hours')
 # select the worksheet
-# wks = sh.worksheet(property='title', value=strng)
-wks = sh.worksheet(property='title', value='April 2 - April 6')
+wks = sh.worksheet(property='title', value=strng)
+# wks = sh.worksheet(property='title', value='April 2 - April 6')
 ######################################################################
 SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # SLACK_VERIFICATION_TOKEN = os.environ["SLACK_VERIFICATION_TOKEN"]
@@ -100,6 +103,14 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # Slack client for Web API requests
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
+
+#WEEKDAY_MATRIX = {
+#    1: ('A4', 'I21'),
+#    2: ('A24', 'I37'),
+#    3: ('A40', 'I53'),
+#    4: ('A56', 'I70'),
+#    5: ('A74', 'I87'),
+#}
 
 WEEKDAY_MATRIX = {
     1: ('A4', 'R26'),
@@ -112,6 +123,8 @@ WEEKDAY_MATRIX = {
 if current_weekday in WEEKDAY_MATRIX:
     current_matrix = wks.get_values(*WEEKDAY_MATRIX.get(current_weekday), include_empty=0)
 else:
+    #if current_min == '00':
+    #wks.clear('A131', 'R131')
     exit()
 #
 # if current_weekday == 1:
@@ -144,10 +157,9 @@ if current_min == '00':
 ######################################################################
 for row in current_matrix_without_empty_entries:
     print(row[0])
-    if row[0].split('h')[0] == current_hour:
+    if (row[0].split('h')[0] == current_hour):
         i = 0
         for cell in row:
-            # print(cell)
             if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
                 emoji_final = ':'+emoji[random.randint(0, 280)]+':'
                 msg = user_list[0][i] + " it's " + row[1] + ' PST.\n' + current_matrix_without_empty_entries[0][

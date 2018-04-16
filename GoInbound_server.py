@@ -4,17 +4,32 @@ import json
 import pygsheets  # ------------------ the main module Gsheets
 from slackclient import SlackClient  # access to slack API
 import string  # to get an adc list
+import re
+import logging
 
-f = open("/home/sasha/GoInbound/list_name", "r")
-strng = f.read()
-f.close()
+#logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
+logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = 'mylog.log')
+
+
+LOG = logging.getLogger(__name__)
+
+
+
+try:
+    f = open("/home/sasha/GoInbound/list_name", "r")
+    strng = f.read()
+    f.close()
+except Exception as exc:
+    exception = exc
+    LOG.exception('Got error - %s', repr(exc))
+
 
 # -----------wrap this up due to time o time request errors
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
-#wks = sh.worksheet(property='title', value=strng)
-wks = sh.worksheet(property='title', value='April 2 - April 6')
+wks = sh.worksheet(property='title', value=strng)
+#wks = sh.worksheet(property='title', value='April 2 - April 6')
 user_confirm = wks.get_values('A130', 'S131', include_empty=1, )
 # -debug- print (user_confirm[0])
 
@@ -38,9 +53,15 @@ def message_actions():
     # add comments
 
     user_who_clicked = form_json['user']['id']
+    ptrn = re.compile(r'.*(\:(.*)\:).*')
+    rplc = re.compile(r'\s+')
+    orig_msg = form_json["original_message"]["attachments"][0]["text"]
+    match = ptrn.match(rplc.sub(' ', orig_msg))
+    if match: match = match.groups()[0]
+    #print(match)
     if user_who_clicked == form_json['callback_id']:
        # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
-        new_attach = '<@' + form_json['callback_id'] + '> has confirmed'
+        new_attach = '<@' + form_json['callback_id'] + '> has confirmed ' + match
         color = "#008000"
         actions = []
         for row in user_confirm:
@@ -53,7 +74,7 @@ def message_actions():
                 i += 1
     else:
         new_attach = form_json['original_message']['attachments'][0][
-                         'text'] + '\n' + '<@' + user_who_clicked + '> I dont think its good idea.'
+                         'text'] + '\n' + '<@' + user_who_clicked + '> You tracked.'
         color = "#800000"
         actions = [
             {
@@ -95,7 +116,15 @@ def message_actions():
         attachments=message_attachments
     )
     #print(json.dumps(form_json) + '\n')
-    print(type(form_json["original_message"]["attachments"]["text"]))
+    #print(form_json["original_message"]["attachments"][0]["text"])
+    #print (form_json["channel"]["id"])
+    #ptrn = re.compile(r'.*(\:(.*)\:).*')
+    #rplc = re.compile(r'\s+')
+    #sttrring = form_json["original_message"]["attachments"][0]["text"]
+    #print (sttrring)
+    #match = ptrn.match(rplc.sub(' ', sttrring))
+    #if match: match = match.groups()[0]
+    #print (match)
     return make_response("", 200),
 
 
