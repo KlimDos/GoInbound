@@ -116,10 +116,10 @@ slack_client = SlackClient(SLACK_BOT_TOKEN)
 
 WEEKDAY_MATRIX = {
     1: ('A4', 'R26'),
-    2: ('A30', 'R49'),
-    3: ('A53', 'R72'),
-    4: ('A75', 'R94'),
-    5: ('A98', 'R117'),
+    2: ('A30', 'R51'),
+    3: ('A55', 'R76'),
+    4: ('A79', 'R100'),
+    5: ('A104', 'R125'),
 }
 
 if current_weekday in WEEKDAY_MATRIX:
@@ -150,11 +150,11 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
-    wks.clear('A131', 'R131')
+    wks.clear('A139', 'R139')
     # - add sleep
 
-user_list = wks.get_values('A130', 'R130', include_empty=0, )
-user_confirm = wks.get_values('A131', 'S131', include_empty=1, )
+user_list = wks.get_values('A138', 'R138', include_empty=0, )
+user_confirm = wks.get_values('A139', 'S139', include_empty=1, )
 
 print(user_confirm)
 

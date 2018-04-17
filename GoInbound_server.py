@@ -7,13 +7,10 @@ import string  # to get an adc list
 import re
 import logging
 
-#logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
-logging.basicConfig(format = u'%(levelname)-8s [%(asctime)s] %(message)s', level = logging.DEBUG, filename = 'mylog.log')
-
+# logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
+logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
 
 LOG = logging.getLogger(__name__)
-
-
 
 try:
     f = open("/home/sasha/GoInbound/list_name", "r")
@@ -23,14 +20,13 @@ except Exception as exc:
     exception = exc
     LOG.exception('Got error - %s', repr(exc))
 
-
 # -----------wrap this up due to time o time request errors
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
 sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
 wks = sh.worksheet(property='title', value=strng)
-#wks = sh.worksheet(property='title', value='April 2 - April 6')
-user_confirm = wks.get_values('A130', 'S131', include_empty=1, )
+# wks = sh.worksheet(property='title', value='April 2 - April 6')
+user_confirm = wks.get_values('A138', 'S139', include_empty=1, )
 # -debug- print (user_confirm[0])
 
 
@@ -45,6 +41,7 @@ slack_client = SlackClient(SLACK_BOT_TOKEN)
 # Flask webserver for incoming traffic from Slack
 app = Flask(__name__)
 
+
 @app.route("/", methods=["POST"])
 def message_actions():
     # Parse the request payload
@@ -58,9 +55,9 @@ def message_actions():
     orig_msg = form_json["original_message"]["attachments"][0]["text"]
     match = ptrn.match(rplc.sub(' ', orig_msg))
     if match: match = match.groups()[0]
-    #print(match)
+    # print(match)
     if user_who_clicked == form_json['callback_id']:
-       # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
+        # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
         new_attach = '<@' + form_json['callback_id'] + '> has confirmed ' + match
         color = "#008000"
         actions = []
@@ -69,7 +66,7 @@ def message_actions():
             i_list = list(string.ascii_uppercase)
             for cell in row:
                 if cell[2:11] == user_who_clicked:
-                    cell_to_write = i_list[i] + '131'
+                    cell_to_write = i_list[i] + '139'
                     wks.update_cell(cell_to_write, 'confirmed')
                 i += 1
     else:
@@ -115,23 +112,30 @@ def message_actions():
         text='',
         attachments=message_attachments
     )
-    #print(json.dumps(form_json) + '\n')
-    #print(form_json["original_message"]["attachments"][0]["text"])
-    #print (form_json["channel"]["id"])
-    #ptrn = re.compile(r'.*(\:(.*)\:).*')
-    #rplc = re.compile(r'\s+')
-    #sttrring = form_json["original_message"]["attachments"][0]["text"]
-    #print (sttrring)
-    #match = ptrn.match(rplc.sub(' ', sttrring))
-    #if match: match = match.groups()[0]
-    #print (match)
+    # print(json.dumps(form_json) + '\n')
+    # print(form_json["original_message"]["attachments"][0]["text"])
+    # print (form_json["channel"]["id"])
+    # ptrn = re.compile(r'.*(\:(.*)\:).*')
+    # rplc = re.compile(r'\s+')
+    # sttrring = form_json["original_message"]["attachments"][0]["text"]
+    # print (sttrring)
+    # match = ptrn.match(rplc.sub(' ', sttrring))
+    # if match: match = match.groups()[0]
+    # print (match)
+
+    LOG.info('Message: %s' % form_json)
+
     return make_response("", 200),
 
 
 ##################################
-@app.route('/post_strng')
+@app.route('/post_strng', methods=["POST"])
 def query_example():
+    form_json = json.loads(request.form["payload"])
+    LOG.info('Message: %s' % form_json)
     return 'Todo...'
+
+
 ##################################
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=8090)
