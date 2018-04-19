@@ -62,7 +62,7 @@ def retry(fn):
 
 # "U7G7BTY9L
 
-Chanel_to_post = "C7HAE7FEG"
+Chanel_to_post = "C9NQKBY8N"
 
 #####################################################################
 # gathering current data from the instance
@@ -158,6 +158,7 @@ user_confirm = wks.get_values('A139', 'S139', include_empty=1, )
 
 print(user_confirm)
 
+
 ######################################################################
 for row in current_matrix_without_empty_entries:
     print(row[0])
@@ -210,4 +211,11 @@ for row in current_matrix_without_empty_entries:
                     text='',
                     attachments=message_attachments
                 )
+            if int(current_min) > 0:
+                Chanel_to_post = user_list[0][i][2:11]
+            if cell == 'lunch':
+                slack_client.api_call(
+                "chat.postMessage",
+                 channel=Chanel_to_post,
+                 text=user_list[0][i] + "Lunch time!!!")
             i += 1
