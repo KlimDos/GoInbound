@@ -115,11 +115,11 @@ slack_client = SlackClient(SLACK_BOT_TOKEN)
 #}
 
 WEEKDAY_MATRIX = {
-    1: ('A4', 'R26'),
-    2: ('A30', 'R51'),
-    3: ('A55', 'R76'),
-    4: ('A79', 'R100'),
-    5: ('A104', 'R125'),
+    1: ('A4', 'S29'),
+    2: ('A33', 'S54'),
+    3: ('A58', 'S79'),
+    4: ('A82', 'S103'),
+    5: ('A107', 'S128'),
 }
 
 if current_weekday in WEEKDAY_MATRIX:
@@ -150,11 +150,11 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
-    wks.clear('A139', 'R139')
+    wks.clear('A142', 'S142')
     # - add sleep
 
-user_list = wks.get_values('A138', 'R138', include_empty=0, )
-user_confirm = wks.get_values('A139', 'S139', include_empty=1, )
+user_list = wks.get_values('A141', 'S141', include_empty=0, )
+user_confirm = wks.get_values('A142', 'T142', include_empty=1, )
 
 print(user_confirm)
 
@@ -211,11 +211,9 @@ for row in current_matrix_without_empty_entries:
                     text='',
                     attachments=message_attachments
                 )
-            if int(current_min) > 0:
-                Chanel_to_post = user_list[0][i][2:11]
-            if cell == 'lunch':
+            if cell == 'Lunch':
                 slack_client.api_call(
                 "chat.postMessage",
-                 channel=Chanel_to_post,
+                 channel=user_list[0][i][2:11],
                  text=user_list[0][i] + "Lunch time!!!")
             i += 1
