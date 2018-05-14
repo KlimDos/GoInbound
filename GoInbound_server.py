@@ -127,7 +127,7 @@ def message_actions():
 
     return make_response("", 200)
 
-
+### curl -i -X POST -H "Content-Type: application/json" -d '{"action":"renew","password":"123"}' 'http://localhost:8091/refreshing'
 @app.route('/refreshing', methods=['POST'])
 def fo():
     content = request.get_json(silent=True)
