@@ -11,6 +11,7 @@ import logging
 logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
 
 LOG = logging.getLogger(__name__)
+LOG.info("===================================STARTING GOINBOUND SERVER=======================================")
 
 try:
     f = open("/home/sasha/GoInbound/list_name", "r")
