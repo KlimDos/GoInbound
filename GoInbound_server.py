@@ -26,7 +26,7 @@ sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
 wks = sh.worksheet(property='title', value=strng)
 # wks = sh.worksheet(property='title', value='April 2 - April 6')
-user_confirm = wks.get_values('A141', 'T142', include_empty=1, ) #=====!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++
+user_confirm = wks.get_values('A141', 'T142', include_empty=1, )
 # -debug- print (user_confirm[0])
 
 
@@ -66,7 +66,7 @@ def message_actions():
             i_list = list(string.ascii_uppercase)
             for cell in row:
                 if cell[2:11] == user_who_clicked:
-                    cell_to_write = i_list[i] + '142' #=====!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++
+                    cell_to_write = i_list[i] + '142'  # =====!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++
                     wks.update_cell(cell_to_write, 'confirmed')
                 i += 1
     else:
@@ -125,17 +125,60 @@ def message_actions():
 
     LOG.info('Message: %s' % form_json)
 
-    return make_response("", 200),
+    return make_response("", 200)
+
+
+@app.route('/refreshing', methods=['POST'])
+def fo():
+    content = request.get_json(silent=True)
+    LOG.info('refreshing list_name')
+    if content['password'] == "123":
+        if content['action'] == "renew":
+            try:
+                f = open("/home/sasha/GoInbound/list_name", "r")
+                strng = f.read()
+                f.close()
+                LOG.info('New List Name - %s', strng)
+            except Exception as exc:
+                exception = exc
+                LOG.exception('Got error - %s', repr(exc))
+        else:
+            LOG.info('Wrong Action')
+    else:
+        LOG.info('Wrong Password')
+    return 'OK'
 
 
 ##################################
-@app.route('/post_strng', methods=["POST"])
-def query_example():
-    form_json = json.loads(request.form["payload"])
-    LOG.info('Message: %s' % form_json)
-    return 'Todo...'
+@app.route('/post_strng', methods=['POST'])
+def foo():
+    if not request.json:
+        abort(400)
+    dic = request.json
+    print(request.json)
+    print(type(dic))
+    for key, key2 in dic.items():
+        print(key, key2)
 
+    # form_json2 = json.loads(request.form["payload2"])
+
+    try:
+        f = open("/home/sasha/GoInbound/list_name", "r")
+        strng = f.read()
+        f.close()
+        LOG.info('List Name - %s', strng)
+    except Exception as exc:
+        exception = exc
+        LOG.exception('Got error - %s', repr(exc))
+
+    return json.dumps(request.json)
 
 ##################################
+
+
+
+
+
+
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8090)
+    app.run(host='0.0.0.0', port=8091, debug=True)
