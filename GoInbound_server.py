@@ -5,12 +5,13 @@ import pygsheets  # ------------------ the main module Gsheets
 from slackclient import SlackClient  # access to slack API
 import string  # to get an adc list
 import re
-import logging
+import logging, coloredlogs
 
 # logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
 logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
 
 LOG = logging.getLogger(__name__)
+coloredlogs.install()
 LOG.info("===================================STARTING GOINBOUND SERVER=======================================")
 
 try:
@@ -28,6 +29,7 @@ sh = gc.open('Support hours')
 wks = sh.worksheet(property='title', value=strng)
 # wks = sh.worksheet(property='title', value='April 2 - April 6')
 user_confirm = wks.get_values('A141', 'T142', include_empty=1, )
+user_confirm_lunch = wks.get_values('A141', 'T141', include_empty=1, )
 # -debug- print (user_confirm[0])
 
 
@@ -51,12 +53,16 @@ def message_actions():
     # add comments
 
     user_who_clicked = form_json['user']['id']
+
+    # ======== whay is doing this function ========== #
     ptrn = re.compile(r'.*(\:(.*)\:).*')
     rplc = re.compile(r'\s+')
     orig_msg = form_json["original_message"]["attachments"][0]["text"]
     match = ptrn.match(rplc.sub(' ', orig_msg))
     if match: match = match.groups()[0]
     # print(match)
+    # ======== whay is doing this function ========== #
+
     if user_who_clicked == form_json['callback_id']:
         # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
         new_attach = '<@' + form_json['callback_id'] + '> has confirmed ' + match
@@ -70,6 +76,24 @@ def message_actions():
                     cell_to_write = i_list[i] + '142'  # =====!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++
                     wks.update_cell(cell_to_write, 'confirmed')
                 i += 1
+
+
+
+    elif form_json['callback_id'] == user_who_clicked + 'lunch':
+        new_attach = '<@' + user_who_clicked + '> enjoy your meal '
+        color = "#D358F7"
+        actions = []
+        for row in user_confirm_lunch:
+            i = 0
+            i_list = list(string.ascii_uppercase)
+            for cell in row:
+                LOG.warning('*** lunch wrapper')
+                if cell[2:11] == user_who_clicked:
+                    cell_to_write = i_list[i] + '143'  # =====!!!!!!!!!!!!!!!!!!!!!!!!!+++++++++
+                    wks.update_cell(cell_to_write, 'confirmed')
+                i += 1
+
+
     else:
         new_attach = form_json['original_message']['attachments'][0][
                          'text'] + '\n' + '<@' + user_who_clicked + '> You tracked.'
@@ -113,16 +137,7 @@ def message_actions():
         text='',
         attachments=message_attachments
     )
-    # print(json.dumps(form_json) + '\n')
-    # print(form_json["original_message"]["attachments"][0]["text"])
-    # print (form_json["channel"]["id"])
-    # ptrn = re.compile(r'.*(\:(.*)\:).*')
-    # rplc = re.compile(r'\s+')
-    # sttrring = form_json["original_message"]["attachments"][0]["text"]
-    # print (sttrring)
-    # match = ptrn.match(rplc.sub(' ', sttrring))
-    # if match: match = match.groups()[0]
-    # print (match)
+
 
     LOG.info('Message: %s' % form_json)
 
@@ -144,9 +159,9 @@ def fo():
                 exception = exc
                 LOG.exception('Got error - %s', repr(exc))
         else:
-            LOG.info('Wrong Action')
+            LOG.warning('Wrong Action')
     else:
-        LOG.info('Wrong Password')
+        LOG.warning('Wrong Password')
     return 'OK'
 
 
@@ -154,8 +169,7 @@ def fo():
 @app.route('/post_strng', methods=['POST'])
 def foo():
     if not request.json:
-        abort(400)
-    dic = request.json
+        dic = request.json
     print(request.json)
     print(type(dic))
     for key, key2 in dic.items():

@@ -5,36 +5,37 @@ import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 import random
 
-emoji = ('davidh','joshua','revolution_parrot','trump','scat_sleepy','glitch_crab','adam','scarederic','mike','happy',
-         'sadmike','lightsaber','krishna','mitch','swiper','minion','unamused_face','piggy','mirror_parrot','coolio',
-         'python','bugs','cloudfinder','pikachu2','captain_obvious','hero','rock','huh','weasel','coffee_','tardis',
-         'szechuan','cry_laughing','grumpycat','troll','francisco','nod','jonk','scat_conspirator','shaka','godmode',
-         'noice','itwasntme','cry_','coololi','yellow_duck','bryan','debian','porg','bowtie','celebrate','whew',
-         'black_square','axcient','penguin_','dead_girl','bruno','discodancer','adi','ninjaphone','barf','ibelieve',
-         'krishnaboom','blush_','sadpanda','hendance','godfather','rage4','superwoman','unix','smileycute','call_me',
-         'slap','dusty_stick','portal_parrot','captain','madunikitty','andy','grinning_face','angrytrump',
-         'science_parrot','coolkim','cube','brb','homer','kevin','scat_concern','goberserk','bryanboom','finnadie',
-         'pirate_parrot','hairybruno','rick','poof','facepalm','madandy','bowlingpin','sad_parrot','birdp','nico',
-         'trogdor','police','neckbeard','ussr','white_square','madsteve','goodnews','cubimal_chick','shipit','hulkfist',
-         'steveboom','philosoraptor','picklerick','shocked','tami','madadam','slack_call','linux','stable_parrot',
-         'sovjet_parrot','face_with_tears_of_joy','toe','trap','hi5','hug','rotating_parrot','monkey_dance','atleti',
-         'madmike','hairnetkevin','dab_','unikitty','notsure','zoidberg','derek','defcon25','giggle','why',
-         'donttalktome','triplets_parrot','bearsteve','montz','okay','scat_think','ren','peep','doh','barca',
-         'blush_normal','pjsalt','ultra_parrot','summer','guillermo','ssearch_cat','superman','coolbruno','bbill',
-         'beafraid','clapping','dull','beryl','cheddar','mway','towelie','toucansam','duck_yellow','phoneninja',
-         'disappearing_ninja','tongue_out','5floppy','r2d2','pikachu','deadpoollove','doge','snoopy','simple_smile',
-         'angel_parrot','surprised','coffeebean','fast_parrot','sombrero_parrot','sadpicard','hairnetmike',
-         'shipit_parrot','madkevin','morty','fry','rube','slack','squirrel','banghead','fingerscrossed',
-         'with_rolling_eyes','moonwalk_parrot','yaomingmeme','rofl','kris','davidn','nooice','deal_with_it_parrot',
-         'octocat','rage1','ippon_seoi_nage','rebel','handsinair','this','skinnyjoshua','troll_parrot','scat_work',
-         'lipssealed','real','grumpy','murphys','rage2','kappa','hurtrealbad','eye_wink','efolder','trollface',
-         'high_fives','thumbsup_parrot','steve','peace_out','peace','sweating','sbug','coreyb','winkinghamster',
-         'shame','acorn','bender','palm_face','kim','thumbsup_all','knoif','pride','parrot_poop','metal','vzhuh',
-         'angrydink','partyparrot','rage3','cmd','headbang','smirk1','skype_face_palm','highflyer','smile-coffee',
-         'cruella','fifo_parrot_r','sun','axcientx','pumpkin','fu','kumomon','jaws','fifo_parrot','feelsgood','oli',
-         'feelsbadman','poopy','vovka','mustache_parrot','hairoli','hammer_time','ooee','bowing','headdesk',
-         'fidget_spinner','turkey_','like_it','crying_face','chicknugg','penarol','portalcake','coolsteve','suspect',
-         'fist_pump','sdelight_cat','yoda','ninja')
+emoji = (
+'davidh', 'joshua', 'revolution_parrot', 'trump', 'scat_sleepy', 'glitch_crab', 'adam', 'scarederic', 'mike', 'happy',
+'sadmike', 'lightsaber', 'krishna', 'mitch', 'swiper', 'minion', 'unamused_face', 'piggy', 'mirror_parrot', 'coolio',
+'python', 'bugs', 'cloudfinder', 'pikachu2', 'captain_obvious', 'hero', 'rock', 'huh', 'weasel', 'coffee_', 'tardis',
+'szechuan', 'cry_laughing', 'grumpycat', 'troll', 'francisco', 'nod', 'jonk', 'scat_conspirator', 'shaka', 'godmode',
+'noice', 'itwasntme', 'cry_', 'coololi', 'yellow_duck', 'bryan', 'debian', 'porg', 'bowtie', 'celebrate', 'whew',
+'black_square', 'axcient', 'penguin_', 'dead_girl', 'bruno', 'discodancer', 'adi', 'ninjaphone', 'barf', 'ibelieve',
+'krishnaboom', 'blush_', 'sadpanda', 'hendance', 'godfather', 'rage4', 'superwoman', 'unix', 'smileycute', 'call_me',
+'slap', 'dusty_stick', 'portal_parrot', 'captain', 'madunikitty', 'andy', 'grinning_face', 'angrytrump',
+'science_parrot', 'coolkim', 'cube', 'brb', 'homer', 'kevin', 'scat_concern', 'goberserk', 'bryanboom', 'finnadie',
+'pirate_parrot', 'hairybruno', 'rick', 'poof', 'facepalm', 'madandy', 'bowlingpin', 'sad_parrot', 'birdp', 'nico',
+'trogdor', 'police', 'neckbeard', 'ussr', 'white_square', 'madsteve', 'goodnews', 'cubimal_chick', 'shipit', 'hulkfist',
+'steveboom', 'philosoraptor', 'picklerick', 'shocked', 'tami', 'madadam', 'slack_call', 'linux', 'stable_parrot',
+'sovjet_parrot', 'face_with_tears_of_joy', 'toe', 'trap', 'hi5', 'hug', 'rotating_parrot', 'monkey_dance', 'atleti',
+'madmike', 'hairnetkevin', 'dab_', 'unikitty', 'notsure', 'zoidberg', 'derek', 'defcon25', 'giggle', 'why',
+'donttalktome', 'triplets_parrot', 'bearsteve', 'montz', 'okay', 'scat_think', 'ren', 'peep', 'doh', 'barca',
+'blush_normal', 'pjsalt', 'ultra_parrot', 'summer', 'guillermo', 'ssearch_cat', 'superman', 'coolbruno', 'bbill',
+'beafraid', 'clapping', 'dull', 'beryl', 'cheddar', 'mway', 'towelie', 'toucansam', 'duck_yellow', 'phoneninja',
+'disappearing_ninja', 'tongue_out', '5floppy', 'r2d2', 'pikachu', 'deadpoollove', 'doge', 'snoopy', 'simple_smile',
+'angel_parrot', 'surprised', 'coffeebean', 'fast_parrot', 'sombrero_parrot', 'sadpicard', 'hairnetmike',
+'shipit_parrot', 'madkevin', 'morty', 'fry', 'rube', 'slack', 'squirrel', 'banghead', 'fingerscrossed',
+'with_rolling_eyes', 'moonwalk_parrot', 'yaomingmeme', 'rofl', 'kris', 'davidn', 'nooice', 'deal_with_it_parrot',
+'octocat', 'rage1', 'ippon_seoi_nage', 'rebel', 'handsinair', 'this', 'skinnyjoshua', 'troll_parrot', 'scat_work',
+'lipssealed', 'real', 'grumpy', 'murphys', 'rage2', 'kappa', 'hurtrealbad', 'eye_wink', 'efolder', 'trollface',
+'high_fives', 'thumbsup_parrot', 'steve', 'peace_out', 'peace', 'sweating', 'sbug', 'coreyb', 'winkinghamster',
+'shame', 'acorn', 'bender', 'palm_face', 'kim', 'thumbsup_all', 'knoif', 'pride', 'parrot_poop', 'metal', 'vzhuh',
+'angrydink', 'partyparrot', 'rage3', 'cmd', 'headbang', 'smirk1', 'skype_face_palm', 'highflyer', 'smile-coffee',
+'cruella', 'fifo_parrot_r', 'sun', 'axcientx', 'pumpkin', 'fu', 'kumomon', 'jaws', 'fifo_parrot', 'feelsgood', 'oli',
+'feelsbadman', 'poopy', 'vovka', 'mustache_parrot', 'hairoli', 'hammer_time', 'ooee', 'bowing', 'headdesk',
+'fidget_spinner', 'turkey_', 'like_it', 'crying_face', 'chicknugg', 'penarol', 'portalcake', 'coolsteve', 'suspect',
+'fist_pump', 'sdelight_cat', 'yoda', 'ninja')
 
 LOG = logging.getLogger(__name__)
 
@@ -62,7 +63,7 @@ def retry(fn):
 
 # "U7G7BTY9L
 
-Chanel_to_post = "C9NQKBY8N"
+Chanel_to_post = "C7HAE7FEG"
 
 #####################################################################
 # gathering current data from the instance
@@ -70,9 +71,8 @@ current_min = datetime.datetime.now().strftime('%M')
 current_hour = datetime.datetime.now().strftime('%H')
 current_weekday = int(datetime.datetime.now().strftime('%u'))
 
-
-#current_weekday = 1  # use it for troubleshooting integer
-#current_hour = '10' # use it for troubleshooting
+# current_weekday = 1  # use it for troubleshooting integer
+# current_hour = '10' # use it for troubleshooting
 ######################################################################
 
 # determining a worksheet name ("month day - month day")
@@ -88,7 +88,7 @@ if (current_weekday == 1 and current_hour == '02') or (os.path.exists('/home/sas
     print("list name overwrote")
 
 if int(current_hour) < 4:
-    current_weekday = current_weekday-1
+    current_weekday = current_weekday - 1
 
 ######################################################################
 gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
@@ -106,13 +106,13 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
 
-#WEEKDAY_MATRIX = {
+# WEEKDAY_MATRIX = {
 #    1: ('A4', 'I21'),
 #    2: ('A24', 'I37'),
 #    3: ('A40', 'I53'),
 #    4: ('A56', 'I70'),
 #    5: ('A74', 'I87'),
-#}
+# }
 
 WEEKDAY_MATRIX = {
     1: ('A4', 'S29'),
@@ -125,8 +125,8 @@ WEEKDAY_MATRIX = {
 if current_weekday in WEEKDAY_MATRIX:
     current_matrix = wks.get_values(*WEEKDAY_MATRIX.get(current_weekday), include_empty=0)
 else:
-    #if current_min == '00':
-    #wks.clear('A131', 'R131')
+    # if current_min == '00':
+    # wks.clear('A131', 'R131')
     exit()
 #
 # if current_weekday == 1:
@@ -150,14 +150,14 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
-    wks.clear('A142', 'S142')
+    wks.clear('A142', 'S143')
     # - add sleep
 
 user_list = wks.get_values('A141', 'S141', include_empty=0, )
 user_confirm = wks.get_values('A142', 'T142', include_empty=1, )
+user_confirm_lunch = wks.get_values('A143', 'T143', include_empty=1, )
 
 print(user_confirm)
-
 
 ######################################################################
 for row in current_matrix_without_empty_entries:
@@ -166,7 +166,7 @@ for row in current_matrix_without_empty_entries:
         i = 0
         for cell in row:
             if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
-                emoji_final = ':'+emoji[random.randint(0, 280)]+':'
+                emoji_final = ':' + emoji[random.randint(0, 280)] + ':'
                 msg = user_list[0][i] + " it's " + row[1] + ' PST.\n' + current_matrix_without_empty_entries[0][
                     i] + ' thats your hour! Go inbound plse ' + emoji_final
                 # print(user_list[0][i])
@@ -211,9 +211,30 @@ for row in current_matrix_without_empty_entries:
                     text='',
                     attachments=message_attachments
                 )
-            if cell == 'Lunch':
+            if cell == 'Lunch' and user_confirm_lunch[0][i] != 'confirmed':
+                msg = user_list[0][i] + " Lunch time!!!"
+                callback_id_lunch = user_list[0][i][2:11] + 'lunch'
+                message_attachments = [
+                    {
+                        "text": msg,
+                        "callback_id": callback_id_lunch,
+                        "color": "#D358F7",
+                        "attachment_type": "default",
+                        "actions": [
+                            {
+                                "name": "Dismiss",
+                                "text": "Dismiss",
+                                "type": "button",
+                                "value": "1",
+                                "style": "primary"
+                            }, ]
+                    }
+                ]
+
                 slack_client.api_call(
-                "chat.postMessage",
-                 channel=user_list[0][i][2:11],
-                 text=user_list[0][i] + "Lunch time!!!")
+                    "chat.postMessage",
+                    channel=user_list[0][i][2:11],
+                    text='',
+                    attachments=message_attachments
+                )
             i += 1
