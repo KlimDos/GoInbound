@@ -5,13 +5,13 @@ import pygsheets  # ------------------ the main module Gsheets
 from slackclient import SlackClient  # access to slack API
 import string  # to get an adc list
 import re
-import logging, coloredlogs
+import logging
 
 # logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
 logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
 
 LOG = logging.getLogger(__name__)
-coloredlogs.install()
+
 LOG.info("===================================STARTING GOINBOUND SERVER=======================================")
 
 try:
@@ -61,7 +61,7 @@ def message_actions():
     match = ptrn.match(rplc.sub(' ', orig_msg))
     if match: match = match.groups()[0]
     # print(match)
-    # ======== whay is doing this function ========== #
+    # ======== why is doing this function ========== #
 
     if user_who_clicked == form_json['callback_id']:
         # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
@@ -152,6 +152,7 @@ def fo():
         if content['action'] == "renew":
             try:
                 f = open("/home/sasha/GoInbound/list_name", "r")
+                global strng
                 strng = f.read()
                 f.close()
                 LOG.info('New List Name - %s', strng)
@@ -163,6 +164,29 @@ def fo():
     else:
         LOG.warning('Wrong Password')
     return 'OK'
+
+ # ====================== #
+
+@app.route('/shift', methods=['POST'])
+def fo2():
+    content = request.get_json(silent=True)
+    #content2 = json.loads(request.form["payload"])
+    LOG.info('shift request')
+    LOG.warning(type(content))
+
+    WEEKDAY_MATRIX = {
+        1: ('A4', 'S29'),
+        2: ('A33', 'S54'),
+        3: ('A58', 'S79'),
+        4: ('A82', 'S103'),
+        5: ('A107', 'S128'),
+    }
+
+
+    #LOG.warning('Message', content)
+    #return 'OK', type(content)
+    return "Good"
+
 
 
 ##################################
