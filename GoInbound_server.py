@@ -61,7 +61,7 @@ def message_actions():
     match = ptrn.match(rplc.sub(' ', orig_msg))
     if match: match = match.groups()[0]
     # print(match)
-    # ======== why is doing this function ========== #
+    # ======== whay is doing this function ========== #
 
     if user_who_clicked == form_json['callback_id']:
         # new_attach = form_json['original_message']['attachments'][0]['text'] + '\n User has conformed'
@@ -96,7 +96,7 @@ def message_actions():
 
     else:
         new_attach = form_json['original_message']['attachments'][0][
-                         'text'] + '\n' + '<@' + user_who_clicked + '> You tracked.'
+                         'text'] + '\n' + '<@' + user_who_clicked + '> Will cover this hour.'
         color = "#800000"
         actions = [
             {
@@ -152,7 +152,6 @@ def fo():
         if content['action'] == "renew":
             try:
                 f = open("/home/sasha/GoInbound/list_name", "r")
-                global strng
                 strng = f.read()
                 f.close()
                 LOG.info('New List Name - %s', strng)
@@ -169,23 +168,14 @@ def fo():
 
 @app.route('/shift', methods=['POST'])
 def fo2():
-    content = request.get_json(silent=True)
+    #content = request.get_json(silent=True)
     #content2 = json.loads(request.form["payload"])
     LOG.info('shift request')
-    LOG.warning(type(content))
-
-    WEEKDAY_MATRIX = {
-        1: ('A4', 'S29'),
-        2: ('A33', 'S54'),
-        3: ('A58', 'S79'),
-        4: ('A82', 'S103'),
-        5: ('A107', 'S128'),
-    }
-
+    #LOG.warning(type(content2))
 
     #LOG.warning('Message', content)
     #return 'OK', type(content)
-    return "Good"
+    return request.get_data()
 
 
 
