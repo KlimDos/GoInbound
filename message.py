@@ -1,12 +1,33 @@
-import os  # ------------------ to get sys var
 import logging
-from slackclient import SlackClient  # ------------------ for slack API
-import pygsheets  # ------------------ the main module
-import datetime  # ------------------ to operate current time
-import random
+import pygsheets
+import datetime
 import time
 import json
+import string
 
+"""-------------Constants--------------"""
+WEEKDAY_MATRIX3 = {"WEEKDAY_MATRIX": {
+    "1": {"1": "x", "2": "y"},
+    "2": {"1": "x", "2": "y"},
+    "3": {"1": "x", "2": "y"},
+    "4": {"1": "x", "2": "y"},
+    "5": {"1": "x", "2": "y"}},
+    "VR": {
+        "1": "z",
+        "2": "z",
+        "3": "z",
+        "4": "z",
+        "5": "z",
+        "6": "z"},
+}
+
+shName = 'Support hours'
+cFile = 'creds.json'
+configJson = '/home/sasha/GoInbound/config.json'
+logFileName = '/home/sasha/GoInbound/mylog.log'
+###################################################
+
+logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename=logFileName)
 LOG = logging.getLogger(__name__)
 
 
@@ -26,40 +47,121 @@ def retry(fn):
     return wrapped
 
 
-#####################################################################
-# "G7GMUN1RA" "support_smolensk" - private
-# "C7HAE7FEG" "ax-phone_schedule"
-# "C9NQKBY8N" "test_aalimov"
+def def_WName():
+    """
+    # determining a worksheet name ("month day - month day")
+    #then = datetime.timedelta(days=2)
+    # gathering current data from the instance
+    # current_weekday = 1  # use it for troubleshooting integer
+    """
 
-# "U7G7BTY9L
+    current_weekday = int(datetime.datetime.now().strftime('%u'))
+    current_data_full = datetime.datetime.now() - datetime.timedelta(days=current_weekday - 1)
+    end_week = current_data_full + datetime.timedelta(days=4)
+    wName = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
+    return wName
 
-Chanel_to_post = "C7HAE7FEG"
 
-#####################################################################
-# gathering current data from the instance
-current_min = datetime.datetime.now().strftime('%M')
-current_hour = datetime.datetime.now().strftime('%H')
-current_weekday = int(datetime.datetime.now().strftime('%u'))
+def open_sheet(shName, wName, cFile):
+    """Open Google Spreadsheet.
 
-# current_weekday = 1  # use it for troubleshooting integer
-# current_hour = '10' # use it for troubleshooting
-######################################################################
+    Keyword arguments:
+    shName -- the name of the Spread Sheet
+    wName  -- the name of the Work Sheet
+    cFile  -- Path to credentials file
 
-# determining a worksheet name ("month day - month day")
-then = datetime.timedelta(days=2)
-new_date = datetime.timedelta(days=current_weekday - 1)
-current_data_full = datetime.datetime.now() - new_date
-end_week = current_data_full + datetime.timedelta(days=4)
-strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
+    Returns an object 'WorkSheet'
+    #gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+    # select the sheet
+    #  sh = retry(gc.open)('Support hours') - its using retry function
+    #sh = gc.open('Support hours')
+    # select the worksheet
+    """
+    workSheet = pygsheets.authorize(outh_file=cFile, outh_nonlocal=True).open(shName).worksheet(property='title',
+                                                                                                value=wName)
+    return workSheet
 
-######################################################################
-gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
-# select the sheet
-#  sh = retry(gc.open)('Support hours') - its using retry function
-sh = gc.open('Support hours')
-# select the worksheet
-wks = sh.worksheet(property='title', value=strng)
 
+def create_WorkWeekMatrix():
+    i = 1
+    d = 1
+
+    ABC = string.ascii_uppercase
+    wks = open_sheet(shName, def_WName(), cFile)
+    LOG.info("-----< Start config creating >-----")
+    while True:
+        end_counter = retry(wks.cell)('A' + str(i))
+        if end_counter.value == 'Smolensk time':
+            WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)]['1'] = end_counter.label
+            print('start day %s tracking' % d)
+            LOG.info('start day %s tracking'), d
+        if end_counter.value == '03h00 - 04h00':
+            WEEKDAY_MATRIX3['WEEKDAY_MATRIX'][str(d)]['2'] = str(ABC[(end_counter.col - 1) + 1]) + str(end_counter.row)
+            print('stop day %s tracking' % d)
+            LOG.info('stop day %s tracking'), d
+            d = d + 1
+        if end_counter.value == 'TMP1':
+            WEEKDAY_MATRIX3["TMP1"]['1'] = end_counter.label
+
+        if end_counter.value == 'end' or end_counter.label == 'A200':
+            break
+        i = i + 1
+        time.sleep(1)
+    LOG.info("-----< Stop config creating >-----")
+    return WEEKDAY_MATRIX3
+
+
+def create_WorkWeekMatrix_new():
+
+    wks = open_sheet(shName, def_WName(), cFile)
+    cell_list_y = wks.range('A1:A200', returnas='cells')
+
+
+    LOG.info("-----< Start config creating >-----")
+
+    LOG.info("-----< Finding X >-----")
+    cell_list_x = wks.range('A1:Z1', returnas='cells')
+    i = 0
+    for item_x in cell_list_x[0]:
+        #print(item_x.value)
+        if item_x.value == 'end':
+            LOG.info("column index  = %s"), (item_x.label[0])
+            print("column index  = %s" % item_x.label[0])
+            break
+
+    LOG.info("-----< Finding Y >-----")
+    d = 1
+    for item_y in cell_list_y:
+        #print(item[0].label)
+        if item_y[0].value == 'Smolensk time':
+            WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)]['1'] = item_y[0].label
+            print('start day %s tracking on %s' % (d, item_y[0].label))
+            LOG.info('start day %s tracking'), d
+        if item_y[0].value == '03h00 - 04h00':
+            WEEKDAY_MATRIX3['WEEKDAY_MATRIX'][str(d)]['2'] = item_x.label[0] + str(item_y[0].row)
+            print('stop day %s tracking on %s' % (d, item_x.label[0] + str(item_y[0].row)))
+            LOG.info('stop day %s tracking'), d, (item_x.label[0] + str(item_y[0].row))
+            d = d + 1
+        if item_y[0].value == 'VR': # - для очистки
+            WEEKDAY_MATRIX3["VR"]['1'] = 'A' + str(item_y[0].row + 2)
+            WEEKDAY_MATRIX3["VR"]['2'] = 'A' + str(item_y[0].row + 1)
+            WEEKDAY_MATRIX3["VR"]['3'] = 'A' + str(item_y[0].row + 3)
+            WEEKDAY_MATRIX3["VR"]['4'] = item_x.label[0] + str(item_y[0].row + 3)
+            WEEKDAY_MATRIX3["VR"]['5'] = chr(ord(item_x.label[0])-1) + str(item_y[0].row + 1)
+            WEEKDAY_MATRIX3["VR"]['6'] = item_x.label[0] + str(item_y[0].row + 2)
+
+    LOG.info("-----< Stop config creating >-----")
+    return WEEKDAY_MATRIX3
+
+
+f = open(configJson, "w")
+f.write(json.dumps(create_WorkWeekMatrix_new()))
+f.close()
+print("the Work Week Matrix has been overwritten")
+LOG.info("the Work Week Matrix has been overwritten")
+
+"""
+#==================================
 #cell01 = wks.cell('A2')
 # wks = sh.worksheet(property='title', value='April 2 - April 6')
 #print(cell01.color)
@@ -68,63 +170,4 @@ wks = sh.worksheet(property='title', value=strng)
 
 #get_mtrx = wks.get_values('A1', 'A130', include_empty=1)
 #print(cell01.color)
-
-
-
-WEEKDAY_MATRIX3 = {"WEEKDAY_MATRIX":{
-                      "1":{"1":"A2","2":"E15"},
-                      "2":{"1":"A29","2":"S50"},
-                      "3":{"1":"A54","2":"S75"},
-                      "4":{"1":"A79","2":"S103"},
-                      "5":{"1":"A107","2":"S128"}},
- "TMP2":{"1":"A141","2":"S141"},
- "TMP3":{"1":"A142","2":"S142"},
- "TMP4":{"1":"A143","2":"T143"}}
-
-######################################################################
-#for row in get_mtrx:
-#    if row[0] == 'Smolensk time':
-#        day_start_flag = True
-#        # cell002 =
-# if (row[0].split('h')[0] == current_hour):
-#     i = 0
-#     for cell in row:
-#         if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
-
-end_counter = ''
-i = 1
-d = 1
-
-
-print(type(WEEKDAY_MATRIX3))
-
-print(WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)]['1'])
-
-while True:
-    n_cell = 'A' + str(i)
-    #end_counter = wks.cell(n_cell)
-    end_counter = retry(wks.cell)(n_cell)
-    print(n_cell)
-    if end_counter.value == 'Smolensk time':
-        day_start_flag1 = end_counter.label
-        day_start_flag = True
-        day_end_flag = False
-        WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)]['1'] = end_counter.label
-        print('start day %s tracking' % d)
-    if end_counter.value == '03h00 - 04h00':
-        day_end_flag1 = end_counter.label
-        day_end_flag = True
-        WEEKDAY_MATRIX3['WEEKDAY_MATRIX'][str(d)]['2'] = end_counter.label
-        #print(day_start_flag1)
-        print('stop day %s tracking' % d)
-        d = d + 1
-    if d == 2:
-        break
-    i = i+1
-    time.sleep(1)
-
-js = json.dumps(WEEKDAY_MATRIX3)
-f = open("/home/sasha/GoInbound/test", "w")
-f.write(js)
-f.close()
-print("list name overwrote")
+"""

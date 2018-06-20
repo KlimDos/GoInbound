@@ -105,15 +105,6 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # Slack client for Web API requests
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
-
-# WEEKDAY_MATRIX = {
-#    1: ('A4', 'I21'),
-#    2: ('A24', 'I37'),
-#    3: ('A40', 'I53'),
-#    4: ('A56', 'I70'),
-#    5: ('A74', 'I87'),
-# }
-
 WEEKDAY_MATRIX = {
     1: ('A4', 'S25'),
     2: ('A29', 'S50'),
@@ -128,21 +119,6 @@ else:
     # if current_min == '00':
     # wks.clear('A131', 'R131')
     exit()
-#
-# if current_weekday == 1:
-#     current_matrix = wks.get_values('A4', 'I21', include_empty=0, )
-# elif current_weekday == 2:
-#     current_matrix = wks.get_values('A24', 'I37', include_empty=0, )
-# elif current_weekday == 3:
-#     current_matrix = wks.get_values('A40', 'I53', include_empty=0, )
-# elif current_weekday == 4:
-#     current_matrix = wks.get_values('A56', 'I70', include_empty=0, )
-# elif current_weekday == 5:
-#     current_matrix = wks.get_values('A74', 'I87', include_empty=0, )
-# elif current_weekday == 6 or current_weekday == 7:
-#     exit()
-
-# print(*current_matrix)
 
 current_matrix_without_empty_entries = [elem for elem in current_matrix if len(elem) > 1]
 # print(*current_matrix_without_empty_entries)
@@ -150,12 +126,12 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
-    wks.clear('A142', 'S143')
+    wks.clear('A142', 'S143') #vr1 vr2
     # - add sleep
 
-user_list = wks.get_values('A141', 'S141', include_empty=0, )
-user_confirm = wks.get_values('A142', 'T142', include_empty=1, )
-user_confirm_lunch = wks.get_values('A143', 'T143', include_empty=1, )
+user_list = wks.get_values('A141', 'R141', include_empty=0, )
+user_confirm = wks.get_values('A142', 'S142', include_empty=1)
+user_confirm_lunch = wks.get_values('A143', 'S143', include_empty=1, )
 
 print(user_confirm)
 
