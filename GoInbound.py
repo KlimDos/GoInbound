@@ -4,6 +4,16 @@ from slackclient import SlackClient  # ------------------ for slack API
 import pygsheets  # ------------------ the main module
 import datetime  # ------------------ to operate current time
 import random
+import json
+
+
+"""-------------Constants--------------"""
+shName = 'Support hours'
+cFile = 'creds.json'
+configJson = '/home/sasha/GoInbound/config.json'
+logFileName = '/home/sasha/GoInbound/mylog.log'
+###################################################
+
 
 emoji = (
 'davidh', 'joshua', 'revolution_parrot', 'trump', 'scat_sleepy', 'glitch_crab', 'adam', 'scarederic', 'mike', 'happy',
@@ -55,14 +65,30 @@ def retry(fn):
 
     return wrapped
 
+def get_matrix():
+    '''
+    
+    :return: 
+    '''
+    #with open('data.json') as f:
+    data = json.load(open(configJson))
 
+
+    return data
 #####################################################################
 # "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
 # "C9NQKBY8N" "test_aalimov"
-
 # "U7G7BTY9L
 
+d = get_matrix()
+WEEKDAY_MATRIX = {
+    1: ['A4', 'S25'],
+    2: ['A29', 'S50'],
+    3: ['A54', 'S75'],
+    4: ['A79', 'S103'],
+    5: ['A107', 'S128'],
+}
 Chanel_to_post = "C7HAE7FEG"
 
 #####################################################################
@@ -112,6 +138,7 @@ WEEKDAY_MATRIX = {
     4: ('A79', 'S103'),
     5: ('A107', 'S128'),
 }
+
 
 if current_weekday in WEEKDAY_MATRIX:
     current_matrix = wks.get_values(*WEEKDAY_MATRIX.get(current_weekday), include_empty=0)

@@ -7,11 +7,12 @@ import string
 
 """-------------Constants--------------"""
 WEEKDAY_MATRIX3 = {"WEEKDAY_MATRIX": {
-    "1": {"1": "x", "2": "y"},
-    "2": {"1": "x", "2": "y"},
-    "3": {"1": "x", "2": "y"},
-    "4": {"1": "x", "2": "y"},
-    "5": {"1": "x", "2": "y"}},
+    "1": ['', ''],
+    "2": ['', ''],
+    "3": ['', ''],
+    "4": ['', ''],
+    "5": ['', '']
+},
     "VR": {
         "1": "z",
         "2": "z",
@@ -134,11 +135,11 @@ def create_WorkWeekMatrix_new():
     for item_y in cell_list_y:
         #print(item[0].label)
         if item_y[0].value == 'Smolensk time':
-            WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)]['1'] = item_y[0].label
+            WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)][0] = item_y[0].label
             print('start day %s tracking on %s' % (d, item_y[0].label))
             LOG.info('start day %s tracking'), d
         if item_y[0].value == '03h00 - 04h00':
-            WEEKDAY_MATRIX3['WEEKDAY_MATRIX'][str(d)]['2'] = item_x.label[0] + str(item_y[0].row)
+            WEEKDAY_MATRIX3['WEEKDAY_MATRIX'][str(d)][1] = item_x.label[0] + str(item_y[0].row)
             print('stop day %s tracking on %s' % (d, item_x.label[0] + str(item_y[0].row)))
             LOG.info('stop day %s tracking'), d, (item_x.label[0] + str(item_y[0].row))
             d = d + 1
