@@ -72,8 +72,6 @@ def get_matrix():
     '''
     #with open('data.json') as f:
     data = json.load(open(configJson))
-
-
     return data
 #####################################################################
 # "G7GMUN1RA" "support_smolensk" - private
@@ -81,14 +79,6 @@ def get_matrix():
 # "C9NQKBY8N" "test_aalimov"
 # "U7G7BTY9L
 
-d = get_matrix()
-WEEKDAY_MATRIX = {
-    1: ['A4', 'S25'],
-    2: ['A29', 'S50'],
-    3: ['A54', 'S75'],
-    4: ['A79', 'S103'],
-    5: ['A107', 'S128'],
-}
 Chanel_to_post = "C7HAE7FEG"
 
 #####################################################################
@@ -132,19 +122,33 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
 WEEKDAY_MATRIX = {
-    1: ('A4', 'S25'),
-    2: ('A29', 'S50'),
-    3: ('A54', 'S75'),
-    4: ('A79', 'S103'),
-    5: ('A107', 'S128'),
+    1: ['x', 'y'],
+    2: ['x', 'y'],
+    3: ['x', 'y'],
+    4: ['x', 'y'],
+    5: ['x', 'y'],
 }
+we = get_matrix()
+WEEKDAY_MATRIX = get_matrix()['WEEKDAY_MATRIX']
+new_dic = we['WEEKDAY_MATRIX']
+new_dic2 = {}
 
+for k, v in new_dic.items():
+    new_dic2[int(k)] = v
+    #print(k,v)
+
+vr1 = get_matrix()['VR']['1']
+vr2 = get_matrix()['VR']['2']
+vr3 = get_matrix()['VR']['3']
+vr4 = get_matrix()['VR']['4']
+vr5 = get_matrix()['VR']['5']
+vr6 = get_matrix()['VR']['6']
+
+WEEKDAY_MATRIX = new_dic2
 
 if current_weekday in WEEKDAY_MATRIX:
     current_matrix = wks.get_values(*WEEKDAY_MATRIX.get(current_weekday), include_empty=0)
 else:
-    # if current_min == '00':
-    # wks.clear('A131', 'R131')
     exit()
 
 current_matrix_without_empty_entries = [elem for elem in current_matrix if len(elem) > 1]
@@ -153,12 +157,12 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '00':
-    wks.clear('A142', 'S143') #vr1 vr2
+    wks.clear(vr1, vr4) #vr1 vr2
     # - add sleep
 
-user_list = wks.get_values('A141', 'R141', include_empty=0, )
-user_confirm = wks.get_values('A142', 'S142', include_empty=1)
-user_confirm_lunch = wks.get_values('A143', 'S143', include_empty=1, )
+user_list = wks.get_values(vr2, vr5, include_empty=0, )
+user_confirm = wks.get_values(vr1, vr6, include_empty=1)
+user_confirm_lunch = wks.get_values(vr3, vr4, include_empty=1, )
 
 print(user_confirm)
 
