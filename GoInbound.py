@@ -121,13 +121,13 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 # Slack client for Web API requests
 slack_client = SlackClient(SLACK_BOT_TOKEN)
 ######################################################################
-WEEKDAY_MATRIX = {
-    1: ['x', 'y'],
-    2: ['x', 'y'],
-    3: ['x', 'y'],
-    4: ['x', 'y'],
-    5: ['x', 'y'],
-}
+#WEEKDAY_MATRIX = {
+#    1: ['x', 'y'],
+#    2: ['x', 'y'],
+#    3: ['x', 'y'],
+#    4: ['x', 'y'],
+#    5: ['x', 'y'],
+#}
 we = get_matrix()
 WEEKDAY_MATRIX = get_matrix()['WEEKDAY_MATRIX']
 new_dic = we['WEEKDAY_MATRIX']
@@ -156,7 +156,7 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 
 ######################################################################
 # clear the conformations at the beginning of the new hour
-if current_min == '00':
+if current_min == '11':
     wks.clear(vr1, vr4) #vr1 vr2
     # - add sleep
 
@@ -170,7 +170,7 @@ print(user_confirm)
 for row in current_matrix_without_empty_entries:
     print(row[0])
     if (row[0].split('h')[0] == current_hour):
-        i = 0
+        i = 2
         for cell in row:
             if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
                 emoji_final = ':' + emoji[random.randint(0, 280)] + ':'
