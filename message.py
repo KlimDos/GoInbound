@@ -50,10 +50,10 @@ def retry(fn):
 
 def def_WName():
     """
-    # determining a worksheet name ("month day - month day")
-    #then = datetime.timedelta(days=2)
-    # gathering current data from the instance
-    # current_weekday = 1  # use it for troubleshooting integer
+    determining a worksheet name ("month day - month day")
+      then = datetime.timedelta(days=2)
+    gathering current data from the instance
+      current_weekday = 1  # use it for troubleshooting integer
     """
 
     current_weekday = int(datetime.datetime.now().strftime('%u'))
@@ -84,6 +84,10 @@ def open_sheet(shName, wName, cFile):
 
 
 def create_WorkWeekMatrix():
+    """
+    this function is not usint in present
+    :return:
+    """
     i = 1
     d = 1
 
@@ -133,7 +137,6 @@ def create_WorkWeekMatrix_new():
     LOG.info("-----< Finding Y >-----")
     d = 1
     for item_y in cell_list_y:
-        #print(item[0].label)
         if item_y[0].value == 'Smolensk time':
             WEEKDAY_MATRIX3["WEEKDAY_MATRIX"][str(d)][0] = item_y[0].label
             print('start day %s tracking on %s' % (d, item_y[0].label))
@@ -143,7 +146,7 @@ def create_WorkWeekMatrix_new():
             print('stop day %s tracking on %s' % (d, item_x.label[0] + str(item_y[0].row)))
             LOG.info('stop day %s tracking'), d, (item_x.label[0] + str(item_y[0].row))
             d = d + 1
-        if item_y[0].value == 'VR': # - для очистки
+        if item_y[0].value == 'VR':
             WEEKDAY_MATRIX3["VR"]['1'] = 'A' + str(item_y[0].row + 2)
             WEEKDAY_MATRIX3["VR"]['2'] = 'A' + str(item_y[0].row + 1)
             WEEKDAY_MATRIX3["VR"]['3'] = 'A' + str(item_y[0].row + 3)
@@ -160,15 +163,3 @@ f.write(json.dumps(create_WorkWeekMatrix_new()))
 f.close()
 print("the Work Week Matrix has been overwritten")
 LOG.info("the Work Week Matrix has been overwritten")
-
-"""
-#==================================
-#cell01 = wks.cell('A2')
-# wks = sh.worksheet(property='title', value='April 2 - April 6')
-#print(cell01.color)
-# cell01.set_text_format('bold', True).value = 'heights'
-#cell01.color = (1, 0, 0, 0)
-
-#get_mtrx = wks.get_values('A1', 'A130', include_empty=1)
-#print(cell01.color)
-"""

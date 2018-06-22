@@ -1,11 +1,10 @@
-import os  # ------------------ to get sys var
+import os
 import logging
-from slackclient import SlackClient  # ------------------ for slack API
-import pygsheets  # ------------------ the main module
-import datetime  # ------------------ to operate current time
+from slackclient import SlackClient
+import pygsheets
+import datetime
 import random
 import json
-
 
 """-------------Constants--------------"""
 shName = 'Support hours'
@@ -16,63 +15,46 @@ logFileName = '/home/sasha/GoInbound/mylog.log'
 
 
 emoji = (
-'davidh', 'joshua', 'revolution_parrot', 'trump', 'scat_sleepy', 'glitch_crab', 'adam', 'scarederic', 'mike', 'happy',
-'sadmike', 'lightsaber', 'krishna', 'mitch', 'swiper', 'minion', 'unamused_face', 'piggy', 'mirror_parrot', 'coolio',
-'python', 'bugs', 'cloudfinder', 'pikachu2', 'captain_obvious', 'hero', 'rock', 'huh', 'weasel', 'coffee_', 'tardis',
-'szechuan', 'cry_laughing', 'grumpycat', 'troll', 'francisco', 'nod', 'jonk', 'scat_conspirator', 'shaka', 'godmode',
-'noice', 'itwasntme', 'cry_', 'coololi', 'yellow_duck', 'bryan', 'debian', 'porg', 'bowtie', 'celebrate', 'whew',
-'black_square', 'axcient', 'penguin_', 'dead_girl', 'bruno', 'discodancer', 'adi', 'ninjaphone', 'barf', 'ibelieve',
-'krishnaboom', 'blush_', 'sadpanda', 'hendance', 'godfather', 'rage4', 'superwoman', 'unix', 'smileycute', 'call_me',
-'slap', 'dusty_stick', 'portal_parrot', 'captain', 'madunikitty', 'andy', 'grinning_face', 'angrytrump',
-'science_parrot', 'coolkim', 'cube', 'brb', 'homer', 'kevin', 'scat_concern', 'goberserk', 'bryanboom', 'finnadie',
-'pirate_parrot', 'hairybruno', 'rick', 'poof', 'facepalm', 'madandy', 'bowlingpin', 'sad_parrot', 'birdp', 'nico',
-'trogdor', 'police', 'neckbeard', 'ussr', 'white_square', 'madsteve', 'goodnews', 'cubimal_chick', 'shipit', 'hulkfist',
-'steveboom', 'philosoraptor', 'picklerick', 'shocked', 'tami', 'madadam', 'slack_call', 'linux', 'stable_parrot',
-'sovjet_parrot', 'face_with_tears_of_joy', 'toe', 'trap', 'hi5', 'hug', 'rotating_parrot', 'monkey_dance', 'atleti',
-'madmike', 'hairnetkevin', 'dab_', 'unikitty', 'notsure', 'zoidberg', 'derek', 'defcon25', 'giggle', 'why',
-'donttalktome', 'triplets_parrot', 'bearsteve', 'montz', 'okay', 'scat_think', 'ren', 'peep', 'doh', 'barca',
-'blush_normal', 'pjsalt', 'ultra_parrot', 'summer', 'guillermo', 'ssearch_cat', 'superman', 'coolbruno', 'bbill',
-'beafraid', 'clapping', 'dull', 'beryl', 'cheddar', 'mway', 'towelie', 'toucansam', 'duck_yellow', 'phoneninja',
-'disappearing_ninja', 'tongue_out', '5floppy', 'r2d2', 'pikachu', 'deadpoollove', 'doge', 'snoopy', 'simple_smile',
-'angel_parrot', 'surprised', 'coffeebean', 'fast_parrot', 'sombrero_parrot', 'sadpicard', 'hairnetmike',
-'shipit_parrot', 'madkevin', 'morty', 'fry', 'rube', 'slack', 'squirrel', 'banghead', 'fingerscrossed',
-'with_rolling_eyes', 'moonwalk_parrot', 'yaomingmeme', 'rofl', 'kris', 'davidn', 'nooice', 'deal_with_it_parrot',
-'octocat', 'rage1', 'ippon_seoi_nage', 'rebel', 'handsinair', 'this', 'skinnyjoshua', 'troll_parrot', 'scat_work',
-'lipssealed', 'real', 'grumpy', 'murphys', 'rage2', 'kappa', 'hurtrealbad', 'eye_wink', 'efolder', 'trollface',
-'high_fives', 'thumbsup_parrot', 'steve', 'peace_out', 'peace', 'sweating', 'sbug', 'coreyb', 'winkinghamster',
-'shame', 'acorn', 'bender', 'palm_face', 'kim', 'thumbsup_all', 'knoif', 'pride', 'parrot_poop', 'metal', 'vzhuh',
-'angrydink', 'partyparrot', 'rage3', 'cmd', 'headbang', 'smirk1', 'skype_face_palm', 'highflyer', 'smile-coffee',
-'cruella', 'fifo_parrot_r', 'sun', 'axcientx', 'pumpkin', 'fu', 'kumomon', 'jaws', 'fifo_parrot', 'feelsgood', 'oli',
-'feelsbadman', 'poopy', 'vovka', 'mustache_parrot', 'hairoli', 'hammer_time', 'ooee', 'bowing', 'headdesk',
-'fidget_spinner', 'turkey_', 'like_it', 'crying_face', 'chicknugg', 'penarol', 'portalcake', 'coolsteve', 'suspect',
-'fist_pump', 'sdelight_cat', 'yoda', 'ninja')
+    'davidh', 'joshua', 'revolution_parrot', 'trump', 'scat_sleepy', 'glitch_crab', 'adam', 'scarederic', 'mike',
+    'happy',
+    'sadmike', 'lightsaber', 'krishna', 'mitch', 'swiper', 'minion', 'unamused_face', 'piggy', 'mirror_parrot',
+    'coolio',
+    'python', 'bugs', 'cloudfinder', 'pikachu2', 'captain_obvious', 'hero', 'rock', 'huh', 'weasel', 'coffee_',
+    'tardis',
+    'szechuan', 'cry_laughing', 'grumpycat', 'troll', 'francisco', 'nod', 'jonk', 'scat_conspirator', 'shaka',
+    'godmode',
+    'noice', 'itwasntme', 'cry_', 'coololi', 'yellow_duck', 'bryan', 'debian', 'porg', 'bowtie', 'celebrate', 'whew',
+    'black_square', 'axcient', 'penguin_', 'dead_girl', 'bruno', 'discodancer', 'adi', 'ninjaphone', 'barf', 'ibelieve',
+    'krishnaboom', 'blush_', 'sadpanda', 'hendance', 'godfather', 'rage4', 'superwoman', 'unix', 'smileycute',
+    'call_me',
+    'slap', 'dusty_stick', 'portal_parrot', 'captain', 'madunikitty', 'andy', 'grinning_face', 'angrytrump',
+    'science_parrot', 'coolkim', 'cube', 'brb', 'homer', 'kevin', 'scat_concern', 'goberserk', 'bryanboom', 'finnadie',
+    'pirate_parrot', 'hairybruno', 'rick', 'poof', 'facepalm', 'madandy', 'bowlingpin', 'sad_parrot', 'birdp', 'nico',
+    'trogdor', 'police', 'neckbeard', 'ussr', 'white_square', 'madsteve', 'goodnews', 'cubimal_chick', 'shipit',
+    'hulkfist',
+    'steveboom', 'philosoraptor', 'picklerick', 'shocked', 'tami', 'madadam', 'slack_call', 'linux', 'stable_parrot',
+    'sovjet_parrot', 'face_with_tears_of_joy', 'toe', 'trap', 'hi5', 'hug', 'rotating_parrot', 'monkey_dance', 'atleti',
+    'madmike', 'hairnetkevin', 'dab_', 'unikitty', 'notsure', 'zoidberg', 'derek', 'defcon25', 'giggle', 'why',
+    'donttalktome', 'triplets_parrot', 'bearsteve', 'montz', 'okay', 'scat_think', 'ren', 'peep', 'doh', 'barca',
+    'blush_normal', 'pjsalt', 'ultra_parrot', 'summer', 'guillermo', 'ssearch_cat', 'superman', 'coolbruno', 'bbill',
+    'beafraid', 'clapping', 'dull', 'beryl', 'cheddar', 'mway', 'towelie', 'toucansam', 'duck_yellow', 'phoneninja',
+    'disappearing_ninja', 'tongue_out', '5floppy', 'r2d2', 'pikachu', 'deadpoollove', 'doge', 'snoopy', 'simple_smile',
+    'angel_parrot', 'surprised', 'coffeebean', 'fast_parrot', 'sombrero_parrot', 'sadpicard', 'hairnetmike',
+    'shipit_parrot', 'madkevin', 'morty', 'fry', 'rube', 'slack', 'squirrel', 'banghead', 'fingerscrossed',
+    'with_rolling_eyes', 'moonwalk_parrot', 'yaomingmeme', 'rofl', 'kris', 'davidn', 'nooice', 'deal_with_it_parrot',
+    'octocat', 'rage1', 'ippon_seoi_nage', 'rebel', 'handsinair', 'this', 'skinnyjoshua', 'troll_parrot', 'scat_work',
+    'lipssealed', 'real', 'grumpy', 'murphys', 'rage2', 'kappa', 'hurtrealbad', 'eye_wink', 'efolder', 'trollface',
+    'high_fives', 'thumbsup_parrot', 'steve', 'peace_out', 'peace', 'sweating', 'sbug', 'coreyb', 'winkinghamster',
+    'shame', 'acorn', 'bender', 'palm_face', 'kim', 'thumbsup_all', 'knoif', 'pride', 'parrot_poop', 'metal', 'vzhuh',
+    'angrydink', 'partyparrot', 'rage3', 'cmd', 'headbang', 'smirk1', 'skype_face_palm', 'highflyer', 'smile-coffee',
+    'cruella', 'fifo_parrot_r', 'sun', 'axcientx', 'pumpkin', 'fu', 'kumomon', 'jaws', 'fifo_parrot', 'feelsgood',
+    'oli',
+    'feelsbadman', 'poopy', 'vovka', 'mustache_parrot', 'hairoli', 'hammer_time', 'ooee', 'bowing', 'headdesk',
+    'fidget_spinner', 'turkey_', 'like_it', 'crying_face', 'chicknugg', 'penarol', 'portalcake', 'coolsteve', 'suspect',
+    'fist_pump', 'sdelight_cat', 'yoda', 'ninja')
 
 LOG = logging.getLogger(__name__)
 
-
-def retry(fn):
-    def wrapped(*args, **kwargs):
-        while True:
-            result, exception = None, None
-            try:
-                result = fn(*args, **kwargs)
-            except Exception as exc:
-                exception = exc
-                LOG.exception('Got error - %s', repr(exc))
-
-            if exception is None:
-                return result
-
-    return wrapped
-
-def get_matrix():
-    '''
-    
-    :return: 
-    '''
-    #with open('data.json') as f:
-    data = json.load(open(configJson))
-    return data
 #####################################################################
 # "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
@@ -97,6 +79,34 @@ new_date = datetime.timedelta(days=current_weekday - 1)
 current_data_full = datetime.datetime.now() - new_date
 end_week = current_data_full + datetime.timedelta(days=4)
 strng = current_data_full.strftime("%B %-d") + ' - ' + end_week.strftime("%B %-d")
+
+
+def retry(fn):
+    def wrapped(*args, **kwargs):
+        while True:
+            result, exception = None, None
+            try:
+                result = fn(*args, **kwargs)
+            except Exception as exc:
+                exception = exc
+                LOG.exception('Got error - %s', repr(exc))
+
+            if exception is None:
+                return result
+
+    return wrapped
+
+
+def get_matrix():
+    '''
+    
+    :return: 
+    '''
+    # with open('data.json') as f:
+    data = json.load(open(configJson))
+    return data
+
+
 if (current_weekday == 1 and current_hour == '02') or (os.path.exists('/home/sasha/GoInbound/list_name') is False):
     f = open("/home/sasha/GoInbound/list_name", "w")
     f.write(strng)
@@ -120,14 +130,7 @@ SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 
 # Slack client for Web API requests
 slack_client = SlackClient(SLACK_BOT_TOKEN)
-######################################################################
-#WEEKDAY_MATRIX = {
-#    1: ['x', 'y'],
-#    2: ['x', 'y'],
-#    3: ['x', 'y'],
-#    4: ['x', 'y'],
-#    5: ['x', 'y'],
-#}
+
 we = get_matrix()
 WEEKDAY_MATRIX = get_matrix()['WEEKDAY_MATRIX']
 new_dic = we['WEEKDAY_MATRIX']
@@ -135,7 +138,7 @@ new_dic2 = {}
 
 for k, v in new_dic.items():
     new_dic2[int(k)] = v
-    #print(k,v)
+    # print(k,v)
 
 vr1 = get_matrix()['VR']['1']
 vr2 = get_matrix()['VR']['2']
@@ -156,8 +159,9 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 
 ######################################################################
 # clear the conformations at the beginning of the new hour
-if current_min == '11':
-    wks.clear(chr(ord(vr1[0])-1)+vr1[1:], vr4) #vr1 vr2
+
+if current_min == '00':
+    wks.clear(chr(ord(vr1[0]) + 2) + vr1[1:], vr4)  # vr1 vr2
     # - add sleep
 
 user_list = wks.get_values(vr2, vr5, include_empty=0, )
