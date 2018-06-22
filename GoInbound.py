@@ -157,7 +157,7 @@ current_matrix_without_empty_entries = [elem for elem in current_matrix if len(e
 ######################################################################
 # clear the conformations at the beginning of the new hour
 if current_min == '11':
-    wks.clear(vr1, vr4) #vr1 vr2
+    wks.clear(chr(ord(vr1[0])-1)+vr1[1:], vr4) #vr1 vr2
     # - add sleep
 
 user_list = wks.get_values(vr2, vr5, include_empty=0, )
@@ -170,7 +170,7 @@ print(user_confirm)
 for row in current_matrix_without_empty_entries:
     print(row[0])
     if (row[0].split('h')[0] == current_hour):
-        i = 2
+        i = 0
         for cell in row:
             if cell == 'Phones' and user_confirm[0][i] != 'confirmed':
                 emoji_final = ':' + emoji[random.randint(0, 280)] + ':'

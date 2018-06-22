@@ -144,9 +144,9 @@ def create_WorkWeekMatrix_new():
             LOG.info('stop day %s tracking'), d, (item_x.label[0] + str(item_y[0].row))
             d = d + 1
         if item_y[0].value == 'VR': # - для очистки
-            WEEKDAY_MATRIX3["VR"]['1'] = 'C' + str(item_y[0].row + 2)
-            WEEKDAY_MATRIX3["VR"]['2'] = 'C' + str(item_y[0].row + 1)
-            WEEKDAY_MATRIX3["VR"]['3'] = 'C' + str(item_y[0].row + 3)
+            WEEKDAY_MATRIX3["VR"]['1'] = 'A' + str(item_y[0].row + 2)
+            WEEKDAY_MATRIX3["VR"]['2'] = 'A' + str(item_y[0].row + 1)
+            WEEKDAY_MATRIX3["VR"]['3'] = 'A' + str(item_y[0].row + 3)
             WEEKDAY_MATRIX3["VR"]['4'] = chr(ord(item_x.label[0])-1) + str(item_y[0].row + 3)
             WEEKDAY_MATRIX3["VR"]['5'] = chr(ord(item_x.label[0])-1) + str(item_y[0].row + 1)
             WEEKDAY_MATRIX3["VR"]['6'] = item_x.label[0] + str(item_y[0].row + 2)
