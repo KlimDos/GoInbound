@@ -7,6 +7,24 @@ import string  # to get an adc list
 import re
 import logging
 
+
+"""-------------Constants--------------"""
+shName = 'Support hours'
+cFile = 'creds.json'
+configJson = '/home/sasha/GoInbound/config.json'
+logFileName = '/home/sasha/GoInbound/mylog.log'
+###################################################
+
+def get_matrix():
+    '''
+
+    :return:
+    '''
+    # with open('data.json') as f:
+    data = json.load(open(configJson))
+    return data
+
+
 # logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
 logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
 
@@ -31,7 +49,16 @@ wks = sh.worksheet(property='title', value=strng)
 # user_confirm = wks.get_values('A141', 'T142', include_empty=1, )
 # user_confirm_lunch = wks.get_values('A141', 'T141', include_empty=1, )
 
-user_confirm2 = wks.range('A141:R141', returnas='cells')
+
+vr1 = get_matrix()['VR']['1']
+vr2 = get_matrix()['VR']['2']
+vr3 = get_matrix()['VR']['3']
+vr4 = get_matrix()['VR']['4']
+vr5 = get_matrix()['VR']['5']
+vr6 = get_matrix()['VR']['6']
+tttt = vr2 + ':' + vr5
+user_confirm2 = wks.range(vr2 + ':' + vr5, returnas='cells')
+
 # -debug- print (user_confirm[0])
 
 
@@ -71,6 +98,7 @@ def message_actions():
         actions = []
         for item_slack_name in user_confirm2[0]:
             if item_slack_name.value[2:11] == user_who_clicked:
+                ttmmpp = item_slack_name.label[0] + str((item_slack_name.row + 1))
                 wks.cell(item_slack_name.label[0] + str((item_slack_name.row + 1))).value = 'confirmed'
                 LOG.info('%s confirmed inbound', user_who_clicked)
                 print("Ura")
