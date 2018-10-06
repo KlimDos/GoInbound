@@ -7,11 +7,16 @@ import random
 import json
 
 """-------------Constants--------------"""
-shName = 'Support hours'
-cFile = 'creds.json'
-configJson = '/home/sasha/GoInbound/config.json'
-logFileName = '/home/sasha/GoInbound/mylog.log'
+#shName = 'Support hours'
+#cFile = 'creds.json'
+#configJson = '/home/sasha/GoInbound/config.json'
+#logFileName = '/home/sasha/GoInbound/mylog.log'
 ###################################################
+shName = 'Support hours'
+cFile = 'sensitive/creds.json'
+configJson = 'config.json'
+logFileName = 'mylog.log'
+list_name = 'list_name'
 
 
 emoji = (
@@ -59,9 +64,9 @@ LOG = logging.getLogger(__name__)
 # "G7GMUN1RA" "support_smolensk" - private
 # "C7HAE7FEG" "ax-phone_schedule"
 # "C9NQKBY8N" "test_aalimov"
-# "U7G7BTY9L
+# "U7G7BTY9L"
 
-Chanel_to_post = "C7HAE7FEG"
+Chanel_to_post = "C9NQKBY8N"
 
 #####################################################################
 # gathering current data from the instance
@@ -107,8 +112,8 @@ def get_matrix():
     return data
 
 
-if (current_weekday == 1 and current_hour == '02') or (os.path.exists('/home/sasha/GoInbound/list_name') is False):
-    f = open("/home/sasha/GoInbound/list_name", "w")
+if (current_weekday == 1 and current_hour == '02') or (os.path.exists(list_name) is False):
+    f = open(list_name, "w")
     f.write(strng)
     f.close()
     print("list name overwrote")
@@ -117,10 +122,10 @@ if int(current_hour) < 4:
     current_weekday = current_weekday - 1
 
 ######################################################################
-gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+gc = pygsheets.authorize(outh_file=cFile, outh_nonlocal=True)
 # select the sheet
 #  sh = retry(gc.open)('Support hours') - its using retry function
-sh = gc.open('Support hours')
+sh = gc.open(shName)
 # select the worksheet
 wks = sh.worksheet(property='title', value=strng)
 # wks = sh.worksheet(property='title', value='April 2 - April 6')
@@ -148,6 +153,8 @@ vr5 = get_matrix()['VR']['5']
 vr6 = get_matrix()['VR']['6']
 
 WEEKDAY_MATRIX = new_dic2
+
+current_weekday = 5
 
 if current_weekday in WEEKDAY_MATRIX:
     current_matrix = wks.get_values(*WEEKDAY_MATRIX.get(current_weekday), include_empty=0)

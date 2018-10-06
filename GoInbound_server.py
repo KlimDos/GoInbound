@@ -9,10 +9,19 @@ import logging
 
 
 """-------------Constants--------------"""
+#shName = 'Support hours'
+#cFile = 'sensitive/creds.json'
+#configJson = '/home/sasha/GoInbound/config.json'
+#logFileName = '/home/sasha/GoInbound/mylog.log'
+#list_name = '/home/sasha/GoInbound/list_name'
+
+#
 shName = 'Support hours'
-cFile = 'creds.json'
-configJson = '/home/sasha/GoInbound/config.json'
-logFileName = '/home/sasha/GoInbound/mylog.log'
+cFile = 'sensitive/creds.json'
+configJson = 'config.json'
+logFileName = 'mylog.log'
+list_name = 'list_name'
+
 ###################################################
 
 def get_matrix():
@@ -21,19 +30,20 @@ def get_matrix():
     :return:
     '''
     # with open('data.json') as f:
+    # add if no file - create it
     data = json.load(open(configJson))
     return data
 
 
 # logging.basicConfig(format = u'%(filename)s[LINE:%(lineno)d]# %(levelname)-8s [%(asctime)s]  %(message)s', level = logging.DEBUG)
-logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename='mylog.log')
+logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s', level=logging.DEBUG, filename=logFileName)
 
 LOG = logging.getLogger(__name__)
 
 LOG.info("===================================STARTING GOINBOUND SERVER=======================================")
 
 try:
-    f = open("/home/sasha/GoInbound/list_name", "r")
+    f = open(list_name, "r")
     strng = f.read()
     f.close()
 except Exception as exc:
@@ -41,7 +51,7 @@ except Exception as exc:
     LOG.exception('Got error - %s', repr(exc))
 
 # -----------wrap this up due to time o time request errors
-gc = pygsheets.authorize(outh_file='creds.json', outh_nonlocal=True)
+gc = pygsheets.authorize(outh_file=cFile, outh_nonlocal=True)
 sh = gc.open('Support hours')
 # wks = sh.worksheet(property='index', value='0')
 wks = sh.worksheet(property='title', value=strng)
@@ -170,7 +180,7 @@ def fo():
     if content['password'] == "123":
         if content['action'] == "renew":
             try:
-                f = open("/home/sasha/GoInbound/list_name", "r")
+                f = open(list_name, "r")
                 strng = f.read()
                 f.close()
                 LOG.info('New List Name - %s', strng)
@@ -208,7 +218,7 @@ def foo():
     # form_json2 = json.loads(request.form["payload2"])
 
     try:
-        f = open("/home/sasha/GoInbound/list_name", "r")
+        f = open(list_name, "r")
         strng = f.read()
         f.close()
         LOG.info('List Name - %s', strng)

@@ -1,0 +1,13 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin 
+# start flask server
+@reboot sasha sleep 5 && /usr/bin/screen -dmS GoInbound_server /home/sasha/GoInbound/wrapper_server.sh
+# start ngrok server
+@reboot sasha sleep 10 && /usr/bin/screen -dmS ngrok_server /home/sasha/GoInbound/ngrok http 8090
+# send new ngrok url
+@reboot sasha  sleep 15 && curl localhost:4040/status | grep -oE -i -e "\w{8}\.ngrok.io" | head -1 |https_proxy=https://104.236.99.46:8080 telegram-send --config ~/GoInbound/tlgm.conf --stdin
+# check the schedule
+0-5 * * * * sasha /home/sasha/GoInbound/wrapper.sh
+# 0 3 * * 1 sasha /usr/bin/curl -i -X POST -H "Content-Type: application/json" -d '{"action":"renew","password":"123"}' 'http://localhost:8090/refreshing'
+58 * * * * sasha /home/sasha/GoInbound/wrapper_json.sh
+1 3 * * Mon sasha ii=$(screen -list |grep Go |cut -d"." -f1); if [[ -z "$ii" ]]; then echo "there is no screen in place"; else kill $ii;fi && sleep 5 && /usr/bin/screen -dmS GoInbound_server /home/sasha/GoInbound/wrapper_server.sh
