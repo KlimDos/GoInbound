@@ -1,0 +1,26 @@
+{
+    "builders": [
+    {
+    "type": "googlecompute",
+    "project_id": "devops-217115",
+    "image_name": "gbot-full-{{timestamp}}",
+    "source_image": "ubuntu-1804-bionic-v20181003",
+    "zone": "europe-west1-b",
+    "ssh_username": "sasha",
+    "machine_type": "f1-micro"
+    }
+    ],
+    "provisioners": [
+    
+        {
+            "type": "file",
+            "source": "/home/sasha/Desktop/git-projects/GoInboundBot/GoInbound",
+            "destination": "/home/sasha/GoInbound"
+        },
+        {
+            "type": "shell",
+            "execute_command": "sudo {{.Path}}",
+            "script": "scripts/install_prerequisites.sh"
+        }
+    ]
+}
