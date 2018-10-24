@@ -16,5 +16,5 @@
 
 - [X] add 'go for lunch' functionality
 - [X] Create Packer image in GCP
-- [] automate the building process
-- [] add workflow to interact with RingCentral Dashboard thru API 
+- [ ] automate the building process
+- [ ] add workflow to interact with RingCentral Dashboard thru API 
